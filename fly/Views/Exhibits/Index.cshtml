@@ -1,0 +1,77 @@
+﻿@model IEnumerable<fly.Models.Exhibit>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<p>
+    Музей - @ViewBag.Museum
+</p>
+
+
+<p>
+    <a asp-controller="Museums" asp-action="Index">Возврат к списку музеев</a>
+
+    <a asp-action="Create" asp-route-id="@ViewBag.MuseumId">Добавить новый</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Museum.MuseumName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExhibitName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExhibitDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Material)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Museum.MuseumName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExhibitName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExhibitDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Material)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Size)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td>
+                    <a asp-controller="ExhibitInExhibitions" asp-action="Index" asp-route-id="@item.ExhibitId">Экспонат на выставке</a>|
+                    <a asp-action="Edit" asp-route-id="@item.ExhibitId">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.ExhibitId">Просмотр</a> |
+                <a asp-action="Delete" asp-route-id="@item.ExhibitId">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

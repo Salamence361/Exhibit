@@ -1,0 +1,61 @@
+﻿@model IEnumerable<fly.Models.Exhibition>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<p>
+    <a asp-action="Create">Добавить новый</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ExhibitionName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExhibitionDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Venue)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExhibitionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExhibitionDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Venue)
+            </td>
+            <td>
+                <a asp-controller="ExhibitInExhibitions" asp-action="Index" asp-route-id="@item.ExhibitionId">Экспонат на выставке</a>
+                <a asp-controller="Visits" asp-action="Index" asp-route-id="@item.ExhibitionId">Посещения</a> |
+                <a asp-action="Edit" asp-route-id="@item.ExhibitionId">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.ExhibitionId">Просмотр</a> |
+                <a asp-action="Delete" asp-route-id="@item.ExhibitionId">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

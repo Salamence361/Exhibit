@@ -1,0 +1,53 @@
+﻿@model IEnumerable<fly.Models.ExhibitInExhibition>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<p>
+   Экспонат -  @ViewBag.Exhibit
+</p>
+<p>
+    Выставка -  @ViewBag.Exhibition
+</p>
+
+<p>
+    <a asp-action="Create">Добавить новый</a>
+    
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Exhibit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Exhibition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlacementDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Exhibition.ExhibitionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlacementDate)
+            </td>
+            <td>
+                  <a asp-action="Edit" asp-route-id="@item.ExhibitInExhibitionId">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.ExhibitInExhibitionId">Просмотр</a> |
+                <a asp-action="Delete" asp-route-id="@item.ExhibitInExhibitionId">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
