@@ -1,8 +1,43 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Домашняя страница";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Добро пожаловать в систему инвентаризации музейных экспонатов</h1>
+   
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title">Музеи</h5>
+                    <p class="card-text">Список всех музеев.</p>
+                    <a asp-controller="Museums" asp-action="Index" class="btn btn-primary">Все музеи</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title">Выставки</h5>
+                    <p class="card-text">Список Выставок.</p>
+                    <a asp-controller="Exhibitions" asp-action="Index" class="btn btn-primary">Выставки</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title">Посетители</h5>
+                    <p class="card-text">Информация о посетителях.</p>
+                    <a asp-controller="Visitors" asp-action="Index" class="btn btn-primary">Посетители</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
