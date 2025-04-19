@@ -31,12 +31,12 @@ namespace fly.Areas.Identity.Pages.Account
         private readonly ApplicationDbContext _context;
 
         public RegisterModel(
-             UserManager<CustomUser> userManager,
-             IUserStore<CustomUser> userStore,
-             SignInManager<CustomUser> signInManager,
-             ILogger<RegisterModel> logger,
-             IEmailSender emailSender,
-             ApplicationDbContext context)
+            UserManager<CustomUser> userManager,
+            IUserStore<CustomUser> userStore,
+            SignInManager<CustomUser> signInManager,
+            ILogger<RegisterModel> logger,
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,7 +47,6 @@ namespace fly.Areas.Identity.Pages.Account
             _context = context;
         }
 
-
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -56,7 +55,6 @@ namespace fly.Areas.Identity.Pages.Account
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public List<SelectListItem> Podrazdelenies { get; private set; }
-
 
         public class InputModel
         {
@@ -100,7 +98,6 @@ namespace fly.Areas.Identity.Pages.Account
             public int PodrazdelenieId { get; set; }
         }
 
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -134,6 +131,27 @@ namespace fly.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    // Назначение роли в зависимости от подразделения
+                    var podrazdelenie = await _context.Podrazdelenies.FindAsync(Input.PodrazdelenieId);
+                    if (podrazdelenie != null)
+                    {
+                        switch (podrazdelenie.PodrazdelenieName)
+                        {
+                            case "ИТ":
+                                await _userManager.AddToRoleAsync(user, "IT");
+                                break;
+                            case "Кладовщики":
+                                await _userManager.AddToRoleAsync(user, "Warehouse");
+                                break;
+                            case "Отдел закупок":
+                                await _userManager.AddToRoleAsync(user, "Procurement");
+                                break;
+                            case "Администрация":
+                                await _userManager.AddToRoleAsync(user, "Administration");
+                                break;
+                        }
+                    }
+
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -152,8 +170,8 @@ namespace fly.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        // Не входить в систему под новым пользователем
+                        return RedirectToAction("Index", "CustomUser", new { area = "" });
                     }
                 }
                 foreach (var error in result.Errors)

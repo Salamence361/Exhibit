@@ -1,0 +1,71 @@
+﻿@model IEnumerable<fly.Models.CustomUser>
+
+@{
+    ViewData["Title"] = "Список пользователей";
+}
+
+<h1>Список пользователей</h1>
+<p>
+    <a asp-action="Register" class="btn btn-primary">Добавить пользователя</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ima)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SecSurname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Podrazdelenie.PodrazdelenieName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ima)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SecSurname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Podrazdelenie.PodrazdelenieName)
+                </td>
+                <td>
+                   
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
