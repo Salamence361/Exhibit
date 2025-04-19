@@ -17,7 +17,7 @@ namespace fly.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -86,6 +86,11 @@ namespace fly.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -137,6 +142,10 @@ namespace fly.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -252,7 +261,6 @@ namespace fly.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("MuseumId")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<string>("Size")
@@ -353,6 +361,22 @@ namespace fly.Migrations
                     b.ToTable("Museum");
                 });
 
+            modelBuilder.Entity("fly.Models.Podrazdelenie", b =>
+                {
+                    b.Property<int>("PodrazdelenieId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PodrazdelenieId"));
+
+                    b.Property<string>("PodrazdelenieName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PodrazdelenieId");
+
+                    b.ToTable("Podrazdelenies");
+                });
+
             modelBuilder.Entity("fly.Models.Visit", b =>
                 {
                     b.Property<int>("VisitId")
@@ -406,6 +430,35 @@ namespace fly.Migrations
                     b.HasKey("VisitorId");
 
                     b.ToTable("Visitor");
+                });
+
+            modelBuilder.Entity("fly.Models.CustomUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Ima")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("PodrazdelenieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecSurname")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasIndex("PodrazdelenieId");
+
+                    b.HasDiscriminator().HasValue("CustomUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -504,6 +557,17 @@ namespace fly.Migrations
                     b.Navigation("Visitor");
                 });
 
+            modelBuilder.Entity("fly.Models.CustomUser", b =>
+                {
+                    b.HasOne("fly.Models.Podrazdelenie", "Podrazdelenie")
+                        .WithMany("CustomUser")
+                        .HasForeignKey("PodrazdelenieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Podrazdelenie");
+                });
+
             modelBuilder.Entity("fly.Models.Exhibit", b =>
                 {
                     b.Navigation("ExhibitInExhibitions");
@@ -519,6 +583,11 @@ namespace fly.Migrations
             modelBuilder.Entity("fly.Models.Museum", b =>
                 {
                     b.Navigation("Exhibit");
+                });
+
+            modelBuilder.Entity("fly.Models.Podrazdelenie", b =>
+                {
+                    b.Navigation("CustomUser");
                 });
 
             modelBuilder.Entity("fly.Models.Visitor", b =>

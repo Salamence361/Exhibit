@@ -27,4 +27,8 @@
     <PackageReference Include="NuGetPowerTools" Version="0.29.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
