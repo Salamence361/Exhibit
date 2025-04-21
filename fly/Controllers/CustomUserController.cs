@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace fly.Controllers
 {
-    [Authorize(Roles = "IT")]
+    //[Authorize(Roles = "IT")]
     public class CustomUserController : Controller
     {
         private readonly UserManager<CustomUser> _userManager;
