@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using fly.Models;
 using fly.Data;
+using fly.Models;
 
 namespace fly.Areas.Identity.Pages.Account.Manage
 {
