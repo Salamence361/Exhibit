@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace fly.Areas.Identity.Pages.Account
@@ -90,10 +91,6 @@ namespace fly.Areas.Identity.Pages.Account
             public string SecSurName { get; set; }
 
             [Required]
-            [Display(Name = "Возраст")]
-            public int Age { get; set; }
-
-            [Required]
             [Display(Name = "Подразделение")]
             public int PodrazdelenieId { get; set; }
         }
@@ -101,7 +98,9 @@ namespace fly.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            Podrazdelenies = _context.Podrazdelenies.Select(x => new SelectListItem() { Value = x.PodrazdelenieId.ToString(), Text = x.PodrazdelenieName }).ToList();
+            Podrazdelenies = await _context.Podrazdelenies
+                .Select(x => new SelectListItem { Value = x.PodrazdelenieId.ToString(), Text = x.PodrazdelenieName })
+                .ToListAsync();
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -110,6 +109,12 @@ namespace fly.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            // Загрузка списка подразделений для повторного отображения в случае ошибки
+            Podrazdelenies = await _context.Podrazdelenies
+                .Select(x => new SelectListItem { Value = x.PodrazdelenieId.ToString(), Text = x.PodrazdelenieName })
+                .ToListAsync();
+
             if (ModelState.IsValid)
             {
                 var user = new CustomUser
@@ -130,7 +135,7 @@ namespace fly.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Назначение роли в зависимости от подразделения
+
                     var podrazdelenie = await _context.Podrazdelenies.FindAsync(Input.PodrazdelenieId);
                     if (podrazdelenie != null)
                     {
@@ -169,7 +174,7 @@ namespace fly.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        // Не входить в систему под новым пользователем
+
                         return RedirectToAction("Index", "CustomUser", new { area = "" });
                     }
                 }
@@ -179,7 +184,7 @@ namespace fly.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+
             return Page();
         }
 
