@@ -1,5 +1,5 @@
-﻿using fly.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using fly.Data;
 using fly.Models;
 
 namespace fly.Data
@@ -10,7 +10,7 @@ namespace fly.Data
         {
             using (var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                // Проверка и добавление подразделений
+
                 if (!context.Podrazdelenies.Any(p => p.PodrazdelenieName == "Отдел закупок"))
                 {
                     Podrazdelenie podrazdelenie1 = new()

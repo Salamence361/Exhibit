@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fly.Data;
 using fly.Models;
-using Microsoft.Extensions.Hosting;
-using NuGet.ProjectModel;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace fly.Controllers
 {
@@ -66,7 +67,7 @@ namespace fly.Controllers
 
                 if (logoFile != null)
                 {
-                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "exhibit");
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "collect");
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))

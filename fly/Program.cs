@@ -1,15 +1,16 @@
-using DinkToPdf.Contracts;
-using DinkToPdf;
 using fly.Data;
 using fly.Models;
 using fly.Services;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Mvc.Razor;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,14 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("ru-RU") };
+    options.DefaultRequestCulture = new RequestCulture("ru-RU");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
+
 // Register PdfService and IConverter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 builder.Services.AddTransient<PdfService>();
@@ -58,17 +67,6 @@ if (wkHtmlToPdfPath.Length > 255)
 {
     throw new PathTooLongException("Путь к библиотеке libwkhtmltox.dll превышает 255 символов");
 }
-
-
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    var supportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("ru-RU") };
-    options.DefaultRequestCulture = new RequestCulture("ru-RU");
-    options.SupportedCultures = supportedCultures;
-    options.SupportedUICultures = supportedCultures;
-});
-
-
 
 var app = builder.Build();
 
@@ -106,6 +104,8 @@ app.UseRequestLocalization(localizationOptions.Value);
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
 app.MapRazorPages();
 
 app.Run();

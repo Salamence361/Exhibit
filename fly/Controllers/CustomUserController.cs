@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace fly.Controllers
 {
-    //[Authorize(Roles = "IT")]
+    [Authorize(Roles = "IT")]
     public class CustomUserController : Controller
     {
         private readonly UserManager<CustomUser> _userManager;
@@ -83,7 +83,6 @@ namespace fly.Controllers
                 user.Surname = model.Surname;
                 user.Ima = model.Ima;
                 user.SecSurname = model.SecSurname;
-                user.Age = model.Age;
                 user.PodrazdelenieId = model.PodrazdelenieId;
 
                 var result = await _userManager.UpdateAsync(user);

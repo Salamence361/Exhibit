@@ -119,7 +119,6 @@ namespace fly.Areas.Identity.Pages.Account
                     SecSurname = Input.SecSurName,
                     Ima = Input.Ima,
                     Surname = Input.Surname,
-                    Age = Input.Age,
                     PodrazdelenieId = Input.PodrazdelenieId
                 };
 

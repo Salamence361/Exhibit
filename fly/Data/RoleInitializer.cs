@@ -26,7 +26,7 @@ namespace fly.Data
                 }
             }
 
-            // Создание администратора
+
             var adminEmail = "admin@muzeu.ru";
             var adminPassword = "Aa12345678!";
             if (userManager.Users.All(u => u.Email != adminEmail))
@@ -38,7 +38,6 @@ namespace fly.Data
                     Surname = "Admin",
                     Ima = "Admin",
                     SecSurname = "Admin",
-                    Age = 25,
                     PodrazdelenieId = 3
                 };
                 var createAdmin = await userManager.CreateAsync(adminUser, adminPassword);

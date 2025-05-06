@@ -3,40 +3,40 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Инвентаризация музейных экспонатов</title>
+    <title>@ViewData["Title"] - Музей</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/fly.styles.css" asp-append-version="true" />
     <style>
         body {
-            background-color: #f5f5dc; /* Светло-бежевый фон */
+            background-color: #f5f5dc; 
         }
 
         .navbar {
-            background-color: #e8d8b0; /* Светло-бежевый цвет навигационной панели */
+            background-color: #e8d8b0; 
         }
 
         .footer {
-            background-color: #e8d8b0; /* Светло-бежевый футер */
+            background-color: #e8d8b0; 
         }
 
         .navbar-brand, .nav-link {
-            color: #3b2e1a !important; /* Темно-коричневый цвет текста для ссылок */
+            color: #3b2e1a !important; 
         }
 
         .btn-primary {
-            background-color: #c2b280; /* Бежевый цвет кнопок */
+            background-color: #c2b280; 
             border-color: #c2b280;
         }
 
             .btn-primary:hover {
-                background-color: #a89f6d; /* Более темный бежевый при наведении */
+                background-color: #a89f6d; 
                 border-color: #a89f6d;
             }
 
         .navbar-brand img {
-            height: 40px; /* Устанавливаем высоту логотипа */
-            width: auto; /* Автоматическая ширина для сохранения пропорций */
+            height: 40px; 
+            width: auto; 
         }
     </style>
 
@@ -59,11 +59,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Домой</a>
                         </li>
-                                                
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Museums" asp-action="Index">Музеи</a>
                         </li>
-                      
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Exhibitions" asp-action="Index">Выставки</a>
                         </li>
@@ -71,7 +69,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Visitors" asp-action="Index">Посетители</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inventories" asp-action="Index">История движения запчастей</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inventories" asp-action="Index">История движения экспонатов</a>
                         </li>
                         @if (User.IsInRole("IT"))
                         {
