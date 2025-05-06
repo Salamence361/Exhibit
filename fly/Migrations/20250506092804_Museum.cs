@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace fly.Migrations
 {
     /// <inheritdoc />
-    public partial class migr1 : Migration
+    public partial class Museum : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -221,6 +221,28 @@ namespace fly.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Inventories",
+                columns: table => new
+                {
+                    InventoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    поступления = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    списания = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PartId = table.Column<int>(type: "int", nullable: false),
+                    ExhibitId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventories", x => x.InventoryId);
+                    table.ForeignKey(
+                        name: "FK_Inventories_Exhibit_ExhibitId",
+                        column: x => x.ExhibitId,
+                        principalTable: "Exhibit",
+                        principalColumn: "ExhibitId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -365,6 +387,11 @@ namespace fly.Migrations
                 column: "ExhibitionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Inventories_ExhibitId",
+                table: "Inventories",
+                column: "ExhibitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Visit_ExhibitionId",
                 table: "Visit",
                 column: "ExhibitionId");
@@ -395,6 +422,9 @@ namespace fly.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExhibitInExhibition");
+
+            migrationBuilder.DropTable(
+                name: "Inventories");
 
             migrationBuilder.DropTable(
                 name: "Visit");

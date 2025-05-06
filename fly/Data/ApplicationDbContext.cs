@@ -14,6 +14,7 @@ namespace fly.Data
         public DbSet<Exhibit> Exhibit { get; set; }
         public DbSet<ExhibitInExhibition> ExhibitInExhibition { get; set; }
         public DbSet<Exhibition> Exhibition { get; set; }
+        public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Visitor> Visitor { get; set; }
         public DbSet<Visit> Visit { get; set; }
         public DbSet<Museum> Museum { get; set; }

@@ -66,8 +66,8 @@
                 @Html.DisplayFor(modelItem => item.Weight)
             </td>
             <td>
-                    <a asp-controller="ExhibitInExhibitions" asp-action="Index" asp-route-id="@item.ExhibitId">Экспонат на выставке</a>|
-                    <a asp-action="Edit" asp-route-id="@item.ExhibitId">Редактировать</a> |
+                <a asp-controller="ExhibitInExhibitions" asp-action="Index" asp-route-id="@item.ExhibitId">Экспонат на выставке</a>|
+                <a asp-action="Edit" asp-route-id="@item.ExhibitId">Редактировать</a> |
                 <a asp-action="Details" asp-route-id="@item.ExhibitId">Просмотр</a> |
                 <a asp-action="Delete" asp-route-id="@item.ExhibitId">Удалить</a>
             </td>

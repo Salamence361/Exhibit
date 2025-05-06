@@ -12,8 +12,8 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250421113035_migr1")]
-    partial class migr1
+    [Migration("20250506092804_Museum")]
+    partial class Museum
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -341,6 +341,36 @@ namespace fly.Migrations
                     b.ToTable("Exhibition");
                 });
 
+            modelBuilder.Entity("fly.Models.Inventory", b =>
+                {
+                    b.Property<int>("InventoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InventoryId"));
+
+                    b.Property<int?>("ExhibitId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("поступления")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("списания")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("InventoryId");
+
+                    b.HasIndex("ExhibitId");
+
+                    b.ToTable("Inventories");
+                });
+
             modelBuilder.Entity("fly.Models.Museum", b =>
                 {
                     b.Property<int>("MuseumId")
@@ -543,6 +573,15 @@ namespace fly.Migrations
                     b.Navigation("Exhibit");
 
                     b.Navigation("Exhibition");
+                });
+
+            modelBuilder.Entity("fly.Models.Inventory", b =>
+                {
+                    b.HasOne("fly.Models.Exhibit", "Exhibit")
+                        .WithMany()
+                        .HasForeignKey("ExhibitId");
+
+                    b.Navigation("Exhibit");
                 });
 
             modelBuilder.Entity("fly.Models.Visit", b =>

@@ -34,6 +34,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="ExhibitInExhibitionId" />
         <input type="submit" value="Удалить" class="btn btn-danger" /> |
-        <a asp-action="Index">Возврат к списку</a>
+        <a asp-action="Index" asp-route-id="@Model.ExhibitId">Возврат к списку</a>
     </form>
 </div>

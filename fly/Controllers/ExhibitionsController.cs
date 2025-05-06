@@ -32,7 +32,7 @@ namespace fly.Controllers
             {
                 return NotFound();
             }
-
+            
             var exhibition = await _context.Exhibition
                 .FirstOrDefaultAsync(m => m.ExhibitionId == id);
             if (exhibition == null)

@@ -7,12 +7,12 @@
 <p>
    Экспонат -  @ViewBag.Exhibit
 </p>
-<p>
-    Выставка -  @ViewBag.Exhibition
-</p>
 
 <p>
-    <a asp-action="Create">Добавить новый</a>
+    
+    <a asp-controller="Exhibits" asp-action="Index">Возврат к списку экспонатов</a>
+
+    <a asp-action="Create" asp-route-id="@ViewBag.ExhibitId">Добавить новый</a>
     
 </p>
 <table class="table">
@@ -22,7 +22,7 @@
                 @Html.DisplayNameFor(model => model.Exhibit)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Exhibition)
+                @Html.DisplayNameFor(model => model.Exhibition.ExhibitionId)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PlacementDate)
@@ -37,14 +37,14 @@
                 @Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Exhibition.ExhibitionName)
+                    @Html.DisplayFor(modelItem => item.Exhibition.ExhibitionId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PlacementDate)
             </td>
             <td>
-                  <a asp-action="Edit" asp-route-id="@item.ExhibitInExhibitionId">Редактировать</a> |
-                <a asp-action="Details" asp-route-id="@item.ExhibitInExhibitionId">Просмотр</a> |
+                <a asp-action="Edit" asp-route-id="@item.ExhibitInExhibitionId">Редактировать</a> 
+                <a asp-action="Details" asp-route-id="@item.ExhibitInExhibitionId">Просмотр</a> 
                 <a asp-action="Delete" asp-route-id="@item.ExhibitInExhibitionId">Удалить</a>
             </td>
         </tr>

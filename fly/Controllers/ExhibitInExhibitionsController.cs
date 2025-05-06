@@ -27,11 +27,12 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var applicationDbContext = _context.ExhibitInExhibition.Include(e => e.Exhibit).Include(e => e.Exhibition);
+            var applicationDbContext = _context.ExhibitInExhibition.Where(t=>t.ExhibitId==id).Include(e => e.Exhibit);
+
 
             string Exhibit = _context.Exhibit.FirstOrDefault(t => t.ExhibitId == id).ExhibitName;
             ViewBag.Exhibit = Exhibit;
-
+            ViewBag.ExhibitId = id;
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -134,7 +135,7 @@ namespace fly.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { id = exhibitInExhibition.ExhibitId });
             }
             ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitId", exhibitInExhibition.ExhibitId);
             ViewData["ExhibitionId"] = new SelectList(_context.Exhibition, "ExhibitionId", "ExhibitionId", exhibitInExhibition.ExhibitionId);
@@ -167,13 +168,11 @@ namespace fly.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var exhibitInExhibition = await _context.ExhibitInExhibition.FindAsync(id);
-            if (exhibitInExhibition != null)
-            {
-                _context.ExhibitInExhibition.Remove(exhibitInExhibition);
-            }
+            _context.ExhibitInExhibition.Remove(exhibitInExhibition);
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Index), new { id = exhibitInExhibition.ExhibitId }); 
         }
 
         private bool ExhibitInExhibitionExists(int id)

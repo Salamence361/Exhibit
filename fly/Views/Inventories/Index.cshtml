@@ -1,0 +1,85 @@
+﻿@model IEnumerable<fly.Models.Inventory>
+
+@{
+    ViewData["Title"] = "История движения экспонатов";
+    var isPdf = Context.Request.Query["isPdf"].ToString() == "true";
+}
+
+@if (!isPdf)
+{
+    <h1>История движения экспонатов</h1>
+
+    <form id="filterForm" method="get" asp-action="Index" class="mb-3">
+        <div class="form-row align-items-end">
+            <div class="form-group col-md-6">
+                <label>Дата поступления:</label>
+                <div class="input-group">
+                    <input type="date" id="startDate" name="startDate" class="form-control" placeholder="с" />
+                    <span class="mx-2"> </span>
+                    <input type="date" id="endDate" name="endDate" class="form-control" placeholder="по" />
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Дата перемещения:</label>
+                <div class="input-group">
+                    <input type="date" id="writeOffStartDate" name="writeOffStartDate" class="form-control" placeholder="с" />
+                    <span class="mx-2"> </span>
+                    <input type="date" id="writeOffEndDate" name="writeOffEndDate" class="form-control" placeholder="по" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Пропуск строки перед кнопками -->
+        <div class="form-row mt-3">
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-primary mr-2">Фильтровать</button>
+                <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистить фильтры</button>
+            </div>
+        </div>
+    </form>
+
+    <p>
+        <a asp-action="DownloadPdf" asp-route-startDate="@Context.Request.Query["startDate"]" asp-route-endDate="@Context.Request.Query["endDate"]" asp-route-writeOffStartDate="@Context.Request.Query["writeOffStartDate"]" asp-route-writeOffEndDate="@Context.Request.Query["writeOffEndDate"]" asp-route-isPdf="true" class="btn btn-danger">Скачать отчет в PDF</a>
+    </p>
+}
+
+<h1>История движения экспонатов</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Экспонат</th>
+            <th>Дата поступления</th>
+            <th>Дата перемещения</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(i => i.Quantity != 0))
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)</td>
+                <td>@Html.DisplayFor(modelItem => item.поступления)</td>
+                <td>@Html.DisplayFor(modelItem => item.списания)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="footer">
+    <p>Сформировано @DateTime.Now.ToString("dd MMMM yyyy")</p>
+</div>
+
+@if (!isPdf)
+{
+    @section Scripts {
+    <script>
+        function clearFilters() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('writeOffStartDate').value = '';
+            document.getElementById('writeOffEndDate').value = '';
+            document.getElementById('filterForm').submit();
+        }
+    </script>
+    }
+}
