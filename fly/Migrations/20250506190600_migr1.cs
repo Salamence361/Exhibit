@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace fly.Migrations
 {
     /// <inheritdoc />
-    public partial class Museum : Migration
+    public partial class migr1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,21 @@ namespace fly.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Category",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Category", x => x.CategoryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,16 +129,24 @@ namespace fly.Migrations
                     ExhibitId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MuseumId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     ExhibitName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ExhibitDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Material = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Size = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Weight = table.Column<float>(type: "real", nullable: false)
+                    Weight = table.Column<float>(type: "real", nullable: false),
+                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Exhibit", x => x.ExhibitId);
+                    table.ForeignKey(
+                        name: "FK_Exhibit_Category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Category",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Exhibit_Museum_MuseumId",
                         column: x => x.MuseumId,
@@ -141,7 +164,6 @@ namespace fly.Migrations
                     Surname = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Ima = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     SecSurname = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: true),
                     PodrazdelenieId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -373,6 +395,11 @@ namespace fly.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Exhibit_CategoryId",
+                table: "Exhibit",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Exhibit_MuseumId",
                 table: "Exhibit",
                 column: "MuseumId");
@@ -447,6 +474,9 @@ namespace fly.Migrations
 
             migrationBuilder.DropTable(
                 name: "Podrazdelenies");
+
+            migrationBuilder.DropTable(
+                name: "Category");
 
             migrationBuilder.DropTable(
                 name: "Museum");

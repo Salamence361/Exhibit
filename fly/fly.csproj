@@ -33,7 +33,7 @@
      <Folder Include="Migrations\" />
 	 <Folder Include="runtimes\win-x64\native\" />
 	 <Folder Include="Views\Shared\" />
-	 <Folder Include="wwwroot\images\collect\" />
+	 <Folder Include="wwwroot\images\category\" />
 	 <Folder Include="wwwroot\images\exhibit\" />
 	 <Folder Include="wwwroot\js\" />
 	 <Folder Include="wwwroot\lib\bootstrap\" />

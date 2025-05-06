@@ -7,106 +7,137 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fly.Data;
 using fly.Models;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using Blazorise;
 
 namespace fly.Controllers
 {
     public class ExhibitsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ExhibitsController(ApplicationDbContext context)
+        public ExhibitsController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Exhibits
-        public async Task<IActionResult> Index(int? id)
-
+        //[Authorize(Roles = "IT, Warehouse, Administration")]
+        public async Task<IActionResult> Index(int? categoryId)
         {
-            if (id == null)
+            if (categoryId == null)
             {
-                return NotFound();
+                var allExhibit = await _context.Exhibit.Include(c => c.Category).ToListAsync();
+                return View(allExhibit);
             }
-
-            var applicationDbContext = _context.Exhibit.
-                Where(t => t.MuseumId == id).Include(e => e.Museum);
-
-            string Museum = _context.Museum.FirstOrDefault(t => t.MuseumId == id).MuseumName;
-            ViewBag.Museum = Museum;
-            ViewBag.MuseumId = id;
-            return View(await applicationDbContext.ToListAsync());
+            else
+            {
+                var modelsForCategory = await _context.Exhibit
+                    .Where(m => m.CategoryId == categoryId)
+                    .Include(c => c.Category)
+                    .ToListAsync();
+                ViewBag.CategoryId = categoryId;
+                ViewBag.CategoryName = _context.Category.FirstOrDefault(b => b.CategoryId == categoryId)?.Name;
+                return View(modelsForCategory);
+            }
         }
 
         // GET: Exhibits/Details/5
-        public async Task<IActionResult> Details(int? id)
+        //[Authorize(Roles = "IT, Warehouse")]
+        public async Task<IActionResult> Details(int? id, int? categoryId)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var exhibit = await _context.Exhibit
-                .Include(e => e.Museum)
+            var ExhibitModel = await _context.Exhibit
+                .Include(c => c.Category)
                 .FirstOrDefaultAsync(m => m.ExhibitId == id);
-            if (exhibit == null)
+            if (ExhibitModel == null)
             {
                 return NotFound();
             }
 
-            return View(exhibit);
+            ViewBag.CategoryId = categoryId;
+            return View(ExhibitModel);
         }
 
         // GET: Exhibits/Create
-        public IActionResult Create(int? id)
+        //[Authorize(Roles = "IT, Warehouse")]
+        public IActionResult Create(int? categoryId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            ViewData["MuseumId"] = id;
+            ViewBag.BrandId = categoryId;
+            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", categoryId);
             return View();
         }
 
         // POST: Exhibits/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExhibitId,MuseumId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight")] Exhibit exhibit)
+        //[Authorize(Roles = "IT, Warehouse")]
+        public async Task<IActionResult> Create([Bind("ExhibitId,MuseumId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight")] Exhibit exhibit, IFormFile logoFile)
         {
             if (ModelState.IsValid)
             {
+                // Проверка на существование экспоната с таким же названием 
+                var existingExhibitModel = await _context.Exhibit
+                    .FirstOrDefaultAsync(cm => cm.ExhibitName == exhibit.ExhibitName  && cm.CategoryId == exhibit.CategoryId);
+                if (existingExhibitModel != null)
+                {
+                    ModelState.AddModelError("Name", "Модель с таким названием и годом выпуска уже существует.");
+                    ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+                    return View(exhibit);
+                }
+
+                if (logoFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "exhibit");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await logoFile.CopyToAsync(fileStream);
+                    }
+                    exhibit.LogoPath = "/images/exhibit/" + uniqueFileName;
+                }
+
                 _context.Add(exhibit);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { id = exhibit.MuseumId });
+                return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
-            ViewData["MuseumId"] = new SelectList(_context.Museum, "MuseumId", "MuseumAddress", exhibit.MuseumId);
+            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
             return View(exhibit);
         }
 
         // GET: Exhibits/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        //[Authorize(Roles = "IT, Warehouse")]
+        public async Task<IActionResult> Edit(int? id, int? categoryId)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var exhibit = await _context.Exhibit.FindAsync(id);
-            if (exhibit == null)
+            var ExhibitModel = await _context.Exhibit.FindAsync(id);
+            if (ExhibitModel == null)
             {
                 return NotFound();
             }
-            ViewData["MuseumId"] = new SelectList(_context.Museum, "MuseumId", "MuseumAddress", exhibit.MuseumId);
-            return View(exhibit);
+            ViewBag.CategoryId = categoryId;
+            ViewData["CategoryList"] = new SelectList(_context.Exhibit, "BrandId", "Name", ExhibitModel.CategoryId);
+            return View(ExhibitModel);
         }
 
         // POST: Exhibits/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,MuseumId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight")] Exhibit exhibit)
+        //[Authorize(Roles = "IT, Warehouse")]
+        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,MuseumId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight")] Exhibit exhibit, IFormFile logoFile)
         {
             if (id != exhibit.ExhibitId)
             {
@@ -117,6 +148,28 @@ namespace fly.Controllers
             {
                 try
                 {
+                    // Проверка на существование экспоната с таким же названием 
+                    var existingExhibitModel = await _context.Exhibit
+                        .FirstOrDefaultAsync(cm => cm.ExhibitName == exhibit.ExhibitName && cm.CategoryId == exhibit.CategoryId);
+                    if (existingExhibitModel != null)
+                    {
+                        ModelState.AddModelError("Name", "Модель с таким названием и годом выпуска уже существует.");
+                        ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+                        return View(exhibit);
+                    }
+
+                    if (logoFile != null)
+                    {
+                        string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "exhibit");
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await logoFile.CopyToAsync(fileStream);
+                        }
+                        exhibit.LogoPath = "/images/exhibit/" + uniqueFileName;
+                    }
+
                     _context.Update(exhibit);
                     await _context.SaveChangesAsync();
                 }
@@ -131,14 +184,15 @@ namespace fly.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index), new { id = exhibit.MuseumId });
+                return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
-            ViewData["MuseumId"] = new SelectList(_context.Museum, "MuseumId", "MuseumAddress", exhibit.MuseumId);
+            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
             return View(exhibit);
         }
 
         // GET: Exhibits/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        //[Authorize(Roles = "IT, Warehouse")]
+        public async Task<IActionResult> Delete(int? id, int? categoryId)
         {
             if (id == null)
             {
@@ -146,20 +200,21 @@ namespace fly.Controllers
             }
 
             var exhibit = await _context.Exhibit
-                .Include(e => e.Museum)
+                .Include(e => e.Category)
                 .FirstOrDefaultAsync(m => m.ExhibitId == id);
             if (exhibit == null)
             {
                 return NotFound();
             }
 
+            ViewBag.CategoryId = categoryId;
             return View(exhibit);
         }
 
         // POST: Exhibits/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id, int? categoryId)
         {
             var exhibit = await _context.Exhibit.FindAsync(id);
             if (exhibit != null)
@@ -168,7 +223,7 @@ namespace fly.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new {id = exhibit.MuseumId });
+            return RedirectToAction(nameof(Index), new {id = exhibit.CategoryId });
         }
 
         private bool ExhibitExists(int id)

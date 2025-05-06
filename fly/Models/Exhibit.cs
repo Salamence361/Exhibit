@@ -13,8 +13,9 @@ namespace fly.Models
 
 
         public int MuseumId { get; set; }
+        public int CategoryId { get; set; }
         public virtual Museum? Museum { get; set; }
-
+        public Category? Category { get; set; }
 
         [Required(ErrorMessage = "Укажите название экспоната")]
         [Display(Name = "Название экспоната")]
@@ -47,7 +48,12 @@ namespace fly.Models
         [Required(ErrorMessage = "Укажите вес")]
         public float? Weight { get; set; }
 
+        [Display(Name = "Логотип")]
+        public string? LogoPath { get; set; }
+
         public virtual ICollection<ExhibitInExhibition>? ExhibitInExhibitions { get; set; }
+
+
     }
 
 

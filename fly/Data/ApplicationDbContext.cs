@@ -20,5 +20,6 @@ namespace fly.Data
         public DbSet<Museum> Museum { get; set; }
         public DbSet<Podrazdelenie> Podrazdelenies { get; set; }
         public DbSet<CustomUser> CustomUsers { get; set; }
+        public DbSet<Category> Category { get; set; }
     }
 }

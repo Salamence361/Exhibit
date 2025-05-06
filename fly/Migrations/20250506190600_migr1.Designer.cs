@@ -12,8 +12,8 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250506103100_Museum")]
-    partial class Museum
+    [Migration("20250506190600_migr1")]
+    partial class migr1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -236,6 +236,30 @@ namespace fly.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("fly.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Category");
+                });
+
             modelBuilder.Entity("fly.Models.Exhibit", b =>
                 {
                     b.Property<int>("ExhibitId")
@@ -243,6 +267,9 @@ namespace fly.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExhibitId"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreationDate")
                         .IsRequired()
@@ -257,6 +284,9 @@ namespace fly.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LogoPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Material")
                         .IsRequired()
@@ -276,6 +306,8 @@ namespace fly.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("ExhibitId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("MuseumId");
 
@@ -472,9 +504,6 @@ namespace fly.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
                     b.Property<string>("Ima")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -550,11 +579,19 @@ namespace fly.Migrations
 
             modelBuilder.Entity("fly.Models.Exhibit", b =>
                 {
+                    b.HasOne("fly.Models.Category", "Category")
+                        .WithMany("Exhibit")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("fly.Models.Museum", "Museum")
                         .WithMany("Exhibit")
                         .HasForeignKey("MuseumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Museum");
                 });
@@ -611,6 +648,11 @@ namespace fly.Migrations
                         .IsRequired();
 
                     b.Navigation("Podrazdelenie");
+                });
+
+            modelBuilder.Entity("fly.Models.Category", b =>
+                {
+                    b.Navigation("Exhibit");
                 });
 
             modelBuilder.Entity("fly.Models.Exhibit", b =>
