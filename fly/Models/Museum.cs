@@ -23,7 +23,9 @@ namespace fly.Models
         [StringLength(250)]
         public string MuseumAddress { get; set; }
 
-        
+        [Display(Name = "Логотип")]
+        public string? LogoPath { get; set; }
+
 
         public virtual ICollection<Exhibit>? Exhibit { get; set; }
     }

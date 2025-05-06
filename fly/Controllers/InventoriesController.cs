@@ -9,8 +9,11 @@ using fly.Data;
 using fly.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using DinkToPdf.Contracts;
+using fly.Services;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 
 namespace fly.Controllers
 {
@@ -18,19 +21,19 @@ namespace fly.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<CustomUser> _userManager;
-        
+        private readonly PdfService _pdfService;
         private readonly ICompositeViewEngine _viewEngine;
 
-        public InventoriesController(ApplicationDbContext context, UserManager<CustomUser> userManager,  ICompositeViewEngine viewEngine)
+        public InventoriesController(ApplicationDbContext context, UserManager<CustomUser> userManager, PdfService pdfService, ICompositeViewEngine viewEngine)
         {
             _context = context;
             _userManager = userManager;
-            
+            _pdfService = pdfService;
             _viewEngine = viewEngine;
         }
 
         // GET: Inventories
-        
+        //[Authorize(Roles = "IT, Warehouse, Administration, Procurement")]
         public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate, DateTime? writeOffStartDate, DateTime? writeOffEndDate)
         {
             var inventoriesQuery = _context.Inventories.Include(i => i.Exhibit).AsQueryable();
@@ -60,7 +63,39 @@ namespace fly.Controllers
             return View(inventories);
         }
 
-     
+        //[HttpGet]
+        //[Authorize(Roles = "IT, Warehouse, Administration")]
+        public async Task<IActionResult> DownloadPdf(DateTime? startDate, DateTime? endDate, DateTime? writeOffStartDate, DateTime? writeOffEndDate)
+        {
+            var inventoriesQuery = _context.Inventories.Include(i => i.Exhibit).AsQueryable();
+
+            if (startDate.HasValue)
+            {
+                inventoriesQuery = inventoriesQuery.Where(i => i.поступления >= startDate.Value.Date);
+            }
+
+            if (endDate.HasValue)
+            {
+                inventoriesQuery = inventoriesQuery.Where(i => i.поступления < endDate.Value.Date.AddDays(1));
+            }
+
+            if (writeOffStartDate.HasValue)
+            {
+                inventoriesQuery = inventoriesQuery.Where(i => i.списания >= writeOffStartDate.Value.Date);
+            }
+
+            if (writeOffEndDate.HasValue)
+            {
+                inventoriesQuery = inventoriesQuery.Where(i => i.списания < writeOffEndDate.Value.Date.AddDays(1));
+            }
+
+            var inventories = await inventoriesQuery.ToListAsync();
+
+            var htmlContent = await RenderViewToStringAsync("Index", inventories, new { isPdf = true });
+            var pdfBytes = _pdfService.GeneratePdf(htmlContent);
+
+            return File(pdfBytes, "application/pdf", "HistoryReport.pdf");
+        }
 
         private async Task<string> RenderViewToStringAsync(string viewName, object model, object routeValues = null)
         {
@@ -93,8 +128,8 @@ namespace fly.Controllers
                 await viewResult.View.RenderAsync(viewContext);
                 return writer.GetStringBuilder().ToString();
             }
-        
 
-    }
+
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace fly.Models
         [Display(Name = "Дата поступления")]
         public DateTime? поступления { get; set; }
 
-        [Display(Name = "Дата списания")]
+        [Display(Name = "Дата перемещения")]
         public DateTime? списания { get; set; }
         // Связи
         public int PartId { get; set; } 

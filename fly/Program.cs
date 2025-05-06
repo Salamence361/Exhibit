@@ -1,10 +1,15 @@
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using fly.Data;
 using fly.Models;
+using fly.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Runtime.InteropServices;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +37,28 @@ builder.Services.AddControllersWithViews()
     .AddDataAnnotationsLocalization();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+// Register PdfService and IConverter
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddTransient<PdfService>();
+
+// Проверка пути к библиотеке libwkhtmltox
+var wkHtmlToPdfPath = Path.Combine(builder.Environment.ContentRootPath, "runtimes", "win-x64", "native", "libwkhtmltox.dll");
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !File.Exists(wkHtmlToPdfPath))
+{
+    throw new FileNotFoundException("Не удалось найти библиотеку libwkhtmltox.dll", wkHtmlToPdfPath);
+}
+
+var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+
+// Логирование длины пути
+logger.LogInformation($"Длина пути к библиотеке libwkhtmltox.dll: {wkHtmlToPdfPath.Length} символов");
+
+if (wkHtmlToPdfPath.Length > 255)
+{
+    throw new PathTooLongException("Путь к библиотеке libwkhtmltox.dll превышает 255 символов");
+}
+
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -72,6 +99,9 @@ app.UseRouting();
 
 app.UseAuthorization();
 app.UseAuthentication();
+
+var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(localizationOptions.Value);
 
 app.MapControllerRoute(
     name: "default",

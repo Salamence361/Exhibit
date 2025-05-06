@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using fly.Data;
 using fly.Models;
+using Microsoft.Extensions.Hosting;
+using NuGet.ProjectModel;
 
 namespace fly.Controllers
 {
     public class MuseumsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public MuseumsController(ApplicationDbContext context)
+        public MuseumsController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Museums
@@ -55,14 +59,30 @@ namespace fly.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MuseumId,MuseumName,MuseumAddress")] Museum museum)
+        public async Task<IActionResult> Create([Bind("MuseumId,MuseumName,MuseumAddress")] Museum museum, IFormFile logoFile)
         {
             if (ModelState.IsValid)
             {
+
+                if (logoFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "exhibit");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await logoFile.CopyToAsync(fileStream);
+                    }
+                    museum.LogoPath = "/images/exhibit/" + uniqueFileName;
+                }
+
                 _context.Add(museum);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+             
+
             }
+
             return View(museum);
         }
 

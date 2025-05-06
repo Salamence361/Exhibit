@@ -376,6 +376,9 @@ namespace fly.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MuseumId"));
 
+                    b.Property<string>("LogoPath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MuseumAddress")
                         .IsRequired()
                         .HasMaxLength(250)
