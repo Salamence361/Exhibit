@@ -12,7 +12,7 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250506190600_migr1")]
+    [Migration("20250507043214_migr1")]
     partial class migr1
     {
         /// <inheritdoc />
@@ -293,7 +293,7 @@ namespace fly.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("MuseumId")
+                    b.Property<int?>("MuseumId")
                         .HasColumnType("int");
 
                     b.Property<string>("Size")
@@ -585,15 +585,11 @@ namespace fly.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("fly.Models.Museum", "Museum")
+                    b.HasOne("fly.Models.Museum", null)
                         .WithMany("Exhibit")
-                        .HasForeignKey("MuseumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MuseumId");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Museum");
                 });
 
             modelBuilder.Entity("fly.Models.ExhibitInExhibition", b =>

@@ -71,7 +71,7 @@ namespace fly.Controllers
         //[Authorize(Roles = "IT, Warehouse")]
         public IActionResult Create(int? categoryId)
         {
-            ViewBag.BrandId = categoryId;
+            ViewBag.CategoryId = categoryId;
             ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", categoryId);
             return View();
         }
@@ -80,7 +80,7 @@ namespace fly.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles = "IT, Warehouse")]
-        public async Task<IActionResult> Create([Bind("ExhibitId,MuseumId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight")] Exhibit exhibit, IFormFile logoFile)
+        public async Task<IActionResult> Create([Bind("ExhibitId,CategoryId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
         {
             if (ModelState.IsValid)
             {

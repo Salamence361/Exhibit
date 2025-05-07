@@ -128,7 +128,6 @@ namespace fly.Migrations
                 {
                     ExhibitId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MuseumId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     ExhibitName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ExhibitDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
@@ -136,7 +135,8 @@ namespace fly.Migrations
                     Material = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Size = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Weight = table.Column<float>(type: "real", nullable: false),
-                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MuseumId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -151,8 +151,7 @@ namespace fly.Migrations
                         name: "FK_Exhibit_Museum_MuseumId",
                         column: x => x.MuseumId,
                         principalTable: "Museum",
-                        principalColumn: "MuseumId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "MuseumId");
                 });
 
             migrationBuilder.CreateTable(

@@ -12,9 +12,9 @@ namespace fly.Models
         public int ExhibitId { get; set; }
 
 
-        public int MuseumId { get; set; }
+       
         public int CategoryId { get; set; }
-        public virtual Museum? Museum { get; set; }
+        
         public Category? Category { get; set; }
 
         [Required(ErrorMessage = "Укажите название экспоната")]

@@ -290,7 +290,7 @@ namespace fly.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("MuseumId")
+                    b.Property<int?>("MuseumId")
                         .HasColumnType("int");
 
                     b.Property<string>("Size")
@@ -582,15 +582,11 @@ namespace fly.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("fly.Models.Museum", "Museum")
+                    b.HasOne("fly.Models.Museum", null)
                         .WithMany("Exhibit")
-                        .HasForeignKey("MuseumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MuseumId");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Museum");
                 });
 
             modelBuilder.Entity("fly.Models.ExhibitInExhibition", b =>
