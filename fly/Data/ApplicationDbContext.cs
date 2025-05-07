@@ -17,7 +17,6 @@ namespace fly.Data
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Visitor> Visitor { get; set; }
         public DbSet<Visit> Visit { get; set; }
-        public DbSet<Museum> Museum { get; set; }
         public DbSet<Podrazdelenie> Podrazdelenies { get; set; }
         public DbSet<CustomUser> CustomUsers { get; set; }
         public DbSet<Category> Category { get; set; }

@@ -58,21 +58,6 @@ namespace fly.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Museum",
-                columns: table => new
-                {
-                    MuseumId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MuseumName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    MuseumAddress = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Museum", x => x.MuseumId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Podrazdelenies",
                 columns: table => new
                 {
@@ -135,8 +120,7 @@ namespace fly.Migrations
                     Material = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Size = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Weight = table.Column<float>(type: "real", nullable: false),
-                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MuseumId = table.Column<int>(type: "int", nullable: true)
+                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -147,11 +131,6 @@ namespace fly.Migrations
                         principalTable: "Category",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Exhibit_Museum_MuseumId",
-                        column: x => x.MuseumId,
-                        principalTable: "Museum",
-                        principalColumn: "MuseumId");
                 });
 
             migrationBuilder.CreateTable(
@@ -399,11 +378,6 @@ namespace fly.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exhibit_MuseumId",
-                table: "Exhibit",
-                column: "MuseumId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ExhibitInExhibition_ExhibitId",
                 table: "ExhibitInExhibition",
                 column: "ExhibitId");
@@ -476,9 +450,6 @@ namespace fly.Migrations
 
             migrationBuilder.DropTable(
                 name: "Category");
-
-            migrationBuilder.DropTable(
-                name: "Museum");
         }
     }
 }

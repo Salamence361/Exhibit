@@ -137,7 +137,7 @@ namespace fly.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles = "IT, Warehouse")]
-        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,MuseumId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight")] Exhibit exhibit, IFormFile logoFile)
+        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,CategoryId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
         {
             if (id != exhibit.ExhibitId)
             {

@@ -12,7 +12,7 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250507043214_migr1")]
+    [Migration("20250507043928_migr1")]
     partial class migr1
     {
         /// <inheritdoc />
@@ -293,9 +293,6 @@ namespace fly.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("MuseumId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Size")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -308,8 +305,6 @@ namespace fly.Migrations
                     b.HasKey("ExhibitId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("MuseumId");
 
                     b.ToTable("Exhibit");
                 });
@@ -401,32 +396,6 @@ namespace fly.Migrations
                     b.HasIndex("ExhibitId");
 
                     b.ToTable("Inventories");
-                });
-
-            modelBuilder.Entity("fly.Models.Museum", b =>
-                {
-                    b.Property<int>("MuseumId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MuseumId"));
-
-                    b.Property<string>("LogoPath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MuseumAddress")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("MuseumName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("MuseumId");
-
-                    b.ToTable("Museum");
                 });
 
             modelBuilder.Entity("fly.Models.Podrazdelenie", b =>
@@ -585,10 +554,6 @@ namespace fly.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("fly.Models.Museum", null)
-                        .WithMany("Exhibit")
-                        .HasForeignKey("MuseumId");
-
                     b.Navigation("Category");
                 });
 
@@ -661,11 +626,6 @@ namespace fly.Migrations
                     b.Navigation("ExhibitInExhibitions");
 
                     b.Navigation("Visits");
-                });
-
-            modelBuilder.Entity("fly.Models.Museum", b =>
-                {
-                    b.Navigation("Exhibit");
                 });
 
             modelBuilder.Entity("fly.Models.Podrazdelenie", b =>
