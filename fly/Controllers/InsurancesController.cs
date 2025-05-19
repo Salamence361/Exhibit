@@ -10,23 +10,23 @@ using fly.Models;
 
 namespace fly.Controllers
 {
-    public class VisitorsController : Controller
+    public class InsurancesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public VisitorsController(ApplicationDbContext context)
+        public InsurancesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Visitors
+        // GET: Insurances
         public async Task<IActionResult> Index()
         {
-           
-            return View(await _context.Visitor.Include(p =>p.Visits).ToListAsync());
+            var applicationDbContext = _context.Insurances.Include(i => i.Exhibit);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Visitors/Details/5
+        // GET: Insurances/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,39 +34,42 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var visitor = await _context.Visitor
-                .FirstOrDefaultAsync(m => m.VisitorId == id);
-            if (visitor == null)
+            var insurance = await _context.Insurances
+                .Include(i => i.Exhibit)
+                .FirstOrDefaultAsync(m => m.InsuranceId == id);
+            if (insurance == null)
             {
                 return NotFound();
             }
 
-            return View(visitor);
+            return View(insurance);
         }
 
-        // GET: Visitors/Create
+        // GET: Insurances/Create
         public IActionResult Create()
         {
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitDescription");
             return View();
         }
 
-        // POST: Visitors/Create
+        // POST: Insurances/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VisitorId,VisitorFirstName,VisitorLastName,Age,VisitDate")] Visitor visitor)
+        public async Task<IActionResult> Create([Bind("InsuranceId,ExhibitId,InsuranceCompany,PolicyNumber,StartDate,EndDate,CoverageAmount")] Insurance insurance)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(visitor);
+                _context.Add(insurance);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(visitor);
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitDescription", insurance.ExhibitId);
+            return View(insurance);
         }
 
-        // GET: Visitors/Edit/5
+        // GET: Insurances/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +77,23 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var visitor = await _context.Visitor.FindAsync(id);
-            if (visitor == null)
+            var insurance = await _context.Insurances.FindAsync(id);
+            if (insurance == null)
             {
                 return NotFound();
             }
-            return View(visitor);
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitDescription", insurance.ExhibitId);
+            return View(insurance);
         }
 
-        // POST: Visitors/Edit/5
+        // POST: Insurances/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VisitorId,VisitorFirstName,VisitorLastName,Age,VisitDate")] Visitor visitor)
+        public async Task<IActionResult> Edit(int id, [Bind("InsuranceId,ExhibitId,InsuranceCompany,PolicyNumber,StartDate,EndDate,CoverageAmount")] Insurance insurance)
         {
-            if (id != visitor.VisitorId)
+            if (id != insurance.InsuranceId)
             {
                 return NotFound();
             }
@@ -98,12 +102,12 @@ namespace fly.Controllers
             {
                 try
                 {
-                    _context.Update(visitor);
+                    _context.Update(insurance);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VisitorExists(visitor.VisitorId))
+                    if (!InsuranceExists(insurance.InsuranceId))
                     {
                         return NotFound();
                     }
@@ -114,10 +118,11 @@ namespace fly.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(visitor);
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitDescription", insurance.ExhibitId);
+            return View(insurance);
         }
 
-        // GET: Visitors/Delete/5
+        // GET: Insurances/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,34 +130,35 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var visitor = await _context.Visitor
-                .FirstOrDefaultAsync(m => m.VisitorId == id);
-            if (visitor == null)
+            var insurance = await _context.Insurances
+                .Include(i => i.Exhibit)
+                .FirstOrDefaultAsync(m => m.InsuranceId == id);
+            if (insurance == null)
             {
                 return NotFound();
             }
 
-            return View(visitor);
+            return View(insurance);
         }
 
-        // POST: Visitors/Delete/5
+        // POST: Insurances/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var visitor = await _context.Visitor.FindAsync(id);
-            if (visitor != null)
+            var insurance = await _context.Insurances.FindAsync(id);
+            if (insurance != null)
             {
-                _context.Visitor.Remove(visitor);
+                _context.Insurances.Remove(insurance);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VisitorExists(int id)
+        private bool InsuranceExists(int id)
         {
-            return _context.Visitor.Any(e => e.VisitorId == id);
+            return _context.Insurances.Any(e => e.InsuranceId == id);
         }
     }
 }

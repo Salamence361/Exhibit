@@ -1,0 +1,75 @@
+﻿@model fly.Models.Restoration
+
+@{
+    ViewData["Title"] = "Добавить реставрацию";
+}
+
+<div class="container" style="margin-top: 20px; background-color: #f9f1e2;">
+    <h1 class="my-4" style="color: #8b5522; text-align: center;">Добавить реставрацию</h1>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" method="post" onsubmit="console.log('Form submitted'); return true;">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="ExhibitId" class="control-label"></label>
+                    <select asp-for="ExhibitId" class="form-control" asp-items="ViewBag.ExhibitId">
+                        <option value="">-- Выберите экспонат --</option>
+                    </select>
+                    <span asp-validation-for="ExhibitId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RestorationDate" class="control-label"></label>
+                    <input asp-for="RestorationDate" class="form-control" type="datetime-local" required />
+                    <span asp-validation-for="RestorationDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RestorerName" class="control-label"></label>
+                    <input asp-for="RestorerName" class="form-control" />
+                    <span asp-validation-for="RestorerName" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsApproved" /> @Html.DisplayNameFor(model => model.IsApproved)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate" class="control-label"></label>
+                    <input asp-for="EndDate" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="submit" value="Добавить" class="btn btn-primary" style="background-color: #8b5522; border-color: #8b5522;" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-secondary" style="background-color: #7f8c8d; border-color: #7f8c8d;">Вернуться к списку</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Page loaded. ViewBag.ExhibitId:', '@ViewBag.ExhibitId');
+            console.log('Validation scripts loaded:', typeof jQuery !== 'undefined' && typeof jQuery.validator !== 'undefined');
+        });
+    </script>
+}

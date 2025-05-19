@@ -295,6 +295,9 @@ namespace fly.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("StorageLocationId")
+                        .HasColumnType("int");
+
                     b.Property<float?>("Weight")
                         .IsRequired()
                         .HasColumnType("real");
@@ -303,31 +306,28 @@ namespace fly.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("StorageLocationId");
+
                     b.ToTable("Exhibit");
                 });
 
             modelBuilder.Entity("fly.Models.ExhibitInExhibition", b =>
                 {
-                    b.Property<int>("ExhibitInExhibitionId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ExhibitionId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExhibitInExhibitionId"));
 
                     b.Property<int>("ExhibitId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ExhibitionId")
+                    b.Property<int>("ExhibitInExhibitionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("PlacementDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ExhibitInExhibitionId");
+                    b.HasKey("ExhibitionId", "ExhibitId");
 
                     b.HasIndex("ExhibitId");
-
-                    b.HasIndex("ExhibitionId");
 
                     b.ToTable("ExhibitInExhibition");
                 });
@@ -365,6 +365,41 @@ namespace fly.Migrations
                     b.ToTable("Exhibition");
                 });
 
+            modelBuilder.Entity("fly.Models.Insurance", b =>
+                {
+                    b.Property<int>("InsuranceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InsuranceId"));
+
+                    b.Property<decimal>("CoverageAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExhibitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InsuranceCompany")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PolicyNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("InsuranceId");
+
+                    b.HasIndex("ExhibitId");
+
+                    b.ToTable("Insurances");
+                });
+
             modelBuilder.Entity("fly.Models.Inventory", b =>
                 {
                     b.Property<int>("InventoryId")
@@ -395,6 +430,41 @@ namespace fly.Migrations
                     b.ToTable("Inventories");
                 });
 
+            modelBuilder.Entity("fly.Models.Movement", b =>
+                {
+                    b.Property<int>("MovementId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovementId"));
+
+                    b.Property<int>("ExhibitId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FromStorageLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("MovementDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ToStorageLocationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MovementId");
+
+                    b.HasIndex("ExhibitId");
+
+                    b.HasIndex("FromStorageLocationId");
+
+                    b.HasIndex("ToStorageLocationId");
+
+                    b.ToTable("Movements");
+                });
+
             modelBuilder.Entity("fly.Models.Podrazdelenie", b =>
                 {
                     b.Property<int>("PodrazdelenieId")
@@ -411,59 +481,70 @@ namespace fly.Migrations
                     b.ToTable("Podrazdelenies");
                 });
 
-            modelBuilder.Entity("fly.Models.Visit", b =>
+            modelBuilder.Entity("fly.Models.Restoration", b =>
                 {
-                    b.Property<int>("VisitId")
+                    b.Property<int>("RestorationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VisitId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RestorationId"));
 
-                    b.Property<int?>("ExhibitionId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("VisitDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("VisitorId")
+                    b.Property<int>("ExhibitId")
                         .HasColumnType("int");
 
-                    b.HasKey("VisitId");
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
 
-                    b.HasIndex("ExhibitionId");
+                    b.Property<DateTime>("RestorationDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("VisitorId");
+                    b.Property<string>("Restorer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Visit");
+                    b.Property<string>("RestorerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("RestorationId");
+
+                    b.HasIndex("ExhibitId");
+
+                    b.ToTable("Restorations");
                 });
 
-            modelBuilder.Entity("fly.Models.Visitor", b =>
+            modelBuilder.Entity("fly.Models.StorageLocation", b =>
                 {
-                    b.Property<int>("VisitorId")
+                    b.Property<int>("StorageLocationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VisitorId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StorageLocationId"));
 
-                    b.Property<int?>("Age")
-                        .HasColumnType("int");
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("VisitDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("VisitorFirstName")
+                    b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VisitorLastName")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("VisitorId");
+                    b.HasKey("StorageLocationId");
 
-                    b.ToTable("Visitor");
+                    b.ToTable("StorageLocations");
                 });
 
             modelBuilder.Entity("fly.Models.CustomUser", b =>
@@ -551,7 +632,15 @@ namespace fly.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("fly.Models.StorageLocation", "StorageLocation")
+                        .WithMany()
+                        .HasForeignKey("StorageLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("StorageLocation");
                 });
 
             modelBuilder.Entity("fly.Models.ExhibitInExhibition", b =>
@@ -573,6 +662,17 @@ namespace fly.Migrations
                     b.Navigation("Exhibition");
                 });
 
+            modelBuilder.Entity("fly.Models.Insurance", b =>
+                {
+                    b.HasOne("fly.Models.Exhibit", "Exhibit")
+                        .WithMany()
+                        .HasForeignKey("ExhibitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exhibit");
+                });
+
             modelBuilder.Entity("fly.Models.Inventory", b =>
                 {
                     b.HasOne("fly.Models.Exhibit", "Exhibit")
@@ -582,19 +682,42 @@ namespace fly.Migrations
                     b.Navigation("Exhibit");
                 });
 
-            modelBuilder.Entity("fly.Models.Visit", b =>
+            modelBuilder.Entity("fly.Models.Movement", b =>
                 {
-                    b.HasOne("fly.Models.Exhibition", "Exhibition")
-                        .WithMany("Visits")
-                        .HasForeignKey("ExhibitionId");
+                    b.HasOne("fly.Models.Exhibit", "Exhibit")
+                        .WithMany("Movements")
+                        .HasForeignKey("ExhibitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("fly.Models.Visitor", "Visitor")
-                        .WithMany("Visits")
-                        .HasForeignKey("VisitorId");
+                    b.HasOne("fly.Models.StorageLocation", "FromStorageLocation")
+                        .WithMany("FromMovements")
+                        .HasForeignKey("FromStorageLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("Exhibition");
+                    b.HasOne("fly.Models.StorageLocation", "ToStorageLocation")
+                        .WithMany("ToMovements")
+                        .HasForeignKey("ToStorageLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("Visitor");
+                    b.Navigation("Exhibit");
+
+                    b.Navigation("FromStorageLocation");
+
+                    b.Navigation("ToStorageLocation");
+                });
+
+            modelBuilder.Entity("fly.Models.Restoration", b =>
+                {
+                    b.HasOne("fly.Models.Exhibit", "Exhibit")
+                        .WithMany("Restoration")
+                        .HasForeignKey("ExhibitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exhibit");
                 });
 
             modelBuilder.Entity("fly.Models.CustomUser", b =>
@@ -616,13 +739,15 @@ namespace fly.Migrations
             modelBuilder.Entity("fly.Models.Exhibit", b =>
                 {
                     b.Navigation("ExhibitInExhibitions");
+
+                    b.Navigation("Movements");
+
+                    b.Navigation("Restoration");
                 });
 
             modelBuilder.Entity("fly.Models.Exhibition", b =>
                 {
                     b.Navigation("ExhibitInExhibitions");
-
-                    b.Navigation("Visits");
                 });
 
             modelBuilder.Entity("fly.Models.Podrazdelenie", b =>
@@ -630,9 +755,11 @@ namespace fly.Migrations
                     b.Navigation("CustomUser");
                 });
 
-            modelBuilder.Entity("fly.Models.Visitor", b =>
+            modelBuilder.Entity("fly.Models.StorageLocation", b =>
                 {
-                    b.Navigation("Visits");
+                    b.Navigation("FromMovements");
+
+                    b.Navigation("ToMovements");
                 });
 #pragma warning restore 612, 618
         }

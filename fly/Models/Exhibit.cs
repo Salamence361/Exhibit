@@ -1,8 +1,8 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using OfficeOpenXml;
+
 
 
 namespace fly.Models
@@ -11,8 +11,6 @@ namespace fly.Models
     {
         public int ExhibitId { get; set; }
 
-
-       
         public int CategoryId { get; set; }
         
         public Category? Category { get; set; }
@@ -50,9 +48,12 @@ namespace fly.Models
 
         [Display(Name = "Логотип")]
         public string? LogoPath { get; set; }
-
+        [Display(Name = "Место хранения")]
+        public int StorageLocationId { get; set; }
         public virtual ICollection<ExhibitInExhibition>? ExhibitInExhibitions { get; set; }
-
+        public virtual ICollection<Restoration>? Restoration { get; set; }
+        public StorageLocation StorageLocation { get; set; }
+        public List<Movement> Movements { get; set; }
 
     }
 

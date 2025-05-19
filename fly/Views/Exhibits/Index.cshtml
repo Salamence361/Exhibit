@@ -16,18 +16,18 @@
     @foreach (var item in Model)
     {
         <div class="col-md-3 mb-4">
-            <div class="car-model-card position-relative">
+            <div class="exhibit-model-card position-relative">
                 @if (!string.IsNullOrEmpty(item.LogoPath))
                 {
-                    <div class="car-model-logo-container">
-                        <img src="@item.LogoPath" alt="Логотип" class="img-fluid car-model-logo" />
+                    <div class="exhibit-model-logo-container">
+                        <img src="@item.LogoPath" alt="Логотип" class="img-fluid exhibit-model-logo" />
                     </div>
                 }
-                <div class="car-model-info position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+                <div class="exhibit-model-info position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
                     <h5>@item.ExhibitName</h5>
-                    <a asp-action="Edit" asp-route-id="@item.ExhibitId" asp-route-brandId="@ViewBag.CategoryId" class="btn btn-sm btn-warning mb-2">Редактировать</a>
-                    <a asp-action="Delete" asp-route-id="@item.ExhibitId" asp-route-brandId="@ViewBag.CategoryId" class="btn btn-sm btn-danger mb-2">Удалить</a>
-                    <a asp-action="Index" asp-controller="Parts" asp-route-carModelId="@item.ExhibitId" class="btn btn-sm btn-primary">Экспонаты</a>
+                    <a asp-action="Index" asp-controller="ExhibitInExhibitions" asp-route-id="@item.ExhibitId" class="btn btn-sm btn-primary">Экспонат на выставке</a>
+                    <a asp-action="Edit" asp-route-id="@item.ExhibitId" asp-route-CategoryId="@ViewBag.CategoryId" class="btn btn-sm btn-warning mb-2">Редактировать</a>
+                    <a asp-action="Delete" asp-route-id="@item.ExhibitId" asp-route-CategoryId="@ViewBag.CategoryId" class="btn btn-sm btn-danger mb-2">Удалить</a>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
 </p>
 @section Styles {
     <style>
-        .car-model-card {
+        .exhibit-model-card {
             overflow: hidden;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -47,11 +47,11 @@
             height: 200px; /* Фиксированная высота для карточек */
         }
 
-            .car-model-card:hover {
+            .exhibit-model-card:hover {
                 transform: scale(1.05);
             }
 
-        .car-model-logo-container {
+        .exhibit-model-logo-container {
             width: 100%;
             height: 100%;
             display: flex;
@@ -60,23 +60,23 @@
             overflow: hidden;
         }
 
-        .car-model-logo {
+        .exhibit-model-logo {
             max-width: 100%;
             max-height: 100%;
             transition: filter 0.3s;
         }
 
-        .car-model-card:hover .car-model-logo {
+        .exhibit-model-card:hover .exhibit-model-logo {
             filter: blur(5px);
         }
 
-        .car-model-info {
+        .exhibit-model-info {
             background-color: rgba(255, 255, 255, 0.8);
             opacity: 0;
             transition: opacity 0.3s;
         }
 
-        .car-model-card:hover .car-model-info {
+        .exhibit-model-card:hover .exhibit-model-info {
             opacity: 1;
         }
     </style>

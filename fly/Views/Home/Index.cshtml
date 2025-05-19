@@ -1,9 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Домашняя страница";
+    ViewData["Title"] = "Добро пожаловать в музей";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Добро пожаловать в музей</h1>
+    <h1 class="display-4">Добро пожаловать в сервис для инвентаризации музейных экспонатов</h1>
     <p class="lead">Чувашский государственный художественный музей.</p>
    
 </div>
@@ -14,9 +14,9 @@
             <div class="card">
 
                 <div class="card-body">
-                    <h5 class="card-title">Категории</h5>
-                    <p class="card-text">Список всех категорий.</p>
-                    <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Все категории</a>
+                    <h5 class="card-title">Экспонаты</h5>
+                    <p class="card-text">Список всех экспонатов.</p>
+                    <a asp-controller="Exhibits" asp-action="Index" class="btn btn-primary">Экспонаты</a>
                 </div>
             </div>
         </div>
@@ -25,8 +25,8 @@
 
                 <div class="card-body">
                     <h5 class="card-title">Выставки</h5>
-                    <p class="card-text">Список Выставок.</p>
-                    <a asp-controller="Exhibitions" asp-action="Index" class="btn btn-primary">Выставки</a>
+                    <p class="card-text">Список всех выставок.</p>
+                    <a asp-controller="Exhibitions" asp-action="Index" class="btn btn-primary">Категории</a>
                 </div>
             </div>
         </div>
@@ -34,9 +34,9 @@
             <div class="card">
 
                 <div class="card-body">
-                    <h5 class="card-title">Посетители</h5>
-                    <p class="card-text">Информация о посетителях.</p>
-                    <a asp-controller="Visitors" asp-action="Index" class="btn btn-primary">Посетители</a>
+                    <h5 class="card-title">Категории</h5>
+                    <p class="card-text">Список всех категорий.</p>
+                    <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Категории</a>
                 </div>
             </div>
         </div>

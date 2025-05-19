@@ -129,7 +129,7 @@ namespace fly.Controllers
                 return NotFound();
             }
             ViewBag.CategoryId = categoryId;
-            ViewData["CategoryList"] = new SelectList(_context.Exhibit, "BrandId", "Name", ExhibitModel.CategoryId);
+            ViewData["CategoryList"] = new SelectList(_context.Exhibit, "CategoryId", "Name", ExhibitModel.CategoryId);
             return View(ExhibitModel);
         }
 
@@ -154,7 +154,7 @@ namespace fly.Controllers
                     if (existingExhibitModel != null)
                     {
                         ModelState.AddModelError("Name", "Модель с таким названием и годом выпуска уже существует.");
-                        ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+                        ViewData["CategoryList"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
                         return View(exhibit);
                     }
 
@@ -186,7 +186,7 @@ namespace fly.Controllers
                 }
                 return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+            ViewData["CategoryList"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
             return View(exhibit);
         }
 

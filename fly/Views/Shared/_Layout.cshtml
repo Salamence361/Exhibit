@@ -57,19 +57,28 @@
                     <ul class="navbar-nav flex-grow-1">
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Домой</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Категории</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Exhibits" asp-action="Index">Все экспонаты</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Exhibitions" asp-action="Index">Выставки</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Visitors" asp-action="Index">Посетители</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Movements" asp-action="Index">Перемещение</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inventories" asp-action="Index">История движения экспонатов</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inventories" asp-action="Index">Инвентаризация</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Restorations" asp-action="Index">Реставрации</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Категории</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="StorageLocations" asp-action="Index">Места хранения</a>
                         </li>
                         @if (User.IsInRole("IT"))
                         {
@@ -91,7 +100,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - ЗКТ-44-22 Васильев Михаил Андреевич
+            &copy; 2025 - 
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

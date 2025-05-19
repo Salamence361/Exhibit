@@ -24,7 +24,7 @@ namespace fly.Models
         public string? Venue { get; set; }
 
         public virtual ICollection<ExhibitInExhibition>? ExhibitInExhibitions { get; set; }
-        public virtual ICollection<Visit>? Visits { get; set; }
+        
     }
 
 

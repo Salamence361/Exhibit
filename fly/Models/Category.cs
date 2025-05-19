@@ -9,7 +9,7 @@ namespace fly.Models
     {
         public int CategoryId { get; set; }
 
-        [Required(ErrorMessage = "Название марки обязательно.")]
+        [Required(ErrorMessage = "Название категории обязательно.")]
         [StringLength(255, ErrorMessage = "Название не должно превышать 255 символов.")]
         [Display(Name = "Название категории")]
         public string? Name { get; set; }

@@ -71,19 +71,18 @@ namespace fly.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Visitor",
+                name: "StorageLocations",
                 columns: table => new
                 {
-                    VisitorId = table.Column<int>(type: "int", nullable: false)
+                    StorageLocationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    VisitorFirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    VisitorLastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: true),
-                    VisitDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Visitor", x => x.VisitorId);
+                    table.PrimaryKey("PK_StorageLocations", x => x.StorageLocationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,32 +103,6 @@ namespace fly.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Exhibit",
-                columns: table => new
-                {
-                    ExhibitId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    ExhibitName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ExhibitDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Material = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Weight = table.Column<float>(type: "real", nullable: false),
-                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Exhibit", x => x.ExhibitId);
-                    table.ForeignKey(
-                        name: "FK_Exhibit_Category_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Category",
-                        principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -170,77 +143,36 @@ namespace fly.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Visit",
+                name: "Exhibit",
                 columns: table => new
                 {
-                    VisitId = table.Column<int>(type: "int", nullable: false)
+                    ExhibitId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    VisitorId = table.Column<int>(type: "int", nullable: true),
-                    ExhibitionId = table.Column<int>(type: "int", nullable: true),
-                    VisitDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    ExhibitName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ExhibitDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Material = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Weight = table.Column<float>(type: "real", nullable: false),
+                    LogoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StorageLocationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Visit", x => x.VisitId);
+                    table.PrimaryKey("PK_Exhibit", x => x.ExhibitId);
                     table.ForeignKey(
-                        name: "FK_Visit_Exhibition_ExhibitionId",
-                        column: x => x.ExhibitionId,
-                        principalTable: "Exhibition",
-                        principalColumn: "ExhibitionId");
-                    table.ForeignKey(
-                        name: "FK_Visit_Visitor_VisitorId",
-                        column: x => x.VisitorId,
-                        principalTable: "Visitor",
-                        principalColumn: "VisitorId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExhibitInExhibition",
-                columns: table => new
-                {
-                    ExhibitInExhibitionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ExhibitId = table.Column<int>(type: "int", nullable: false),
-                    ExhibitionId = table.Column<int>(type: "int", nullable: false),
-                    PlacementDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExhibitInExhibition", x => x.ExhibitInExhibitionId);
-                    table.ForeignKey(
-                        name: "FK_ExhibitInExhibition_Exhibit_ExhibitId",
-                        column: x => x.ExhibitId,
-                        principalTable: "Exhibit",
-                        principalColumn: "ExhibitId",
+                        name: "FK_Exhibit_Category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Category",
+                        principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ExhibitInExhibition_Exhibition_ExhibitionId",
-                        column: x => x.ExhibitionId,
-                        principalTable: "Exhibition",
-                        principalColumn: "ExhibitionId",
+                        name: "FK_Exhibit_StorageLocations_StorageLocationId",
+                        column: x => x.StorageLocationId,
+                        principalTable: "StorageLocations",
+                        principalColumn: "StorageLocationId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Inventories",
-                columns: table => new
-                {
-                    InventoryId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    поступления = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    списания = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PartId = table.Column<int>(type: "int", nullable: false),
-                    ExhibitId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Inventories", x => x.InventoryId);
-                    table.ForeignKey(
-                        name: "FK_Inventories_Exhibit_ExhibitId",
-                        column: x => x.ExhibitId,
-                        principalTable: "Exhibit",
-                        principalColumn: "ExhibitId");
                 });
 
             migrationBuilder.CreateTable(
@@ -328,6 +260,139 @@ namespace fly.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ExhibitInExhibition",
+                columns: table => new
+                {
+                    ExhibitId = table.Column<int>(type: "int", nullable: false),
+                    ExhibitionId = table.Column<int>(type: "int", nullable: false),
+                    ExhibitInExhibitionId = table.Column<int>(type: "int", nullable: false),
+                    PlacementDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExhibitInExhibition", x => new { x.ExhibitionId, x.ExhibitId });
+                    table.ForeignKey(
+                        name: "FK_ExhibitInExhibition_Exhibit_ExhibitId",
+                        column: x => x.ExhibitId,
+                        principalTable: "Exhibit",
+                        principalColumn: "ExhibitId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExhibitInExhibition_Exhibition_ExhibitionId",
+                        column: x => x.ExhibitionId,
+                        principalTable: "Exhibition",
+                        principalColumn: "ExhibitionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Insurances",
+                columns: table => new
+                {
+                    InsuranceId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExhibitId = table.Column<int>(type: "int", nullable: false),
+                    InsuranceCompany = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PolicyNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CoverageAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Insurances", x => x.InsuranceId);
+                    table.ForeignKey(
+                        name: "FK_Insurances_Exhibit_ExhibitId",
+                        column: x => x.ExhibitId,
+                        principalTable: "Exhibit",
+                        principalColumn: "ExhibitId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Inventories",
+                columns: table => new
+                {
+                    InventoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    поступления = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    списания = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PartId = table.Column<int>(type: "int", nullable: false),
+                    ExhibitId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventories", x => x.InventoryId);
+                    table.ForeignKey(
+                        name: "FK_Inventories_Exhibit_ExhibitId",
+                        column: x => x.ExhibitId,
+                        principalTable: "Exhibit",
+                        principalColumn: "ExhibitId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Movements",
+                columns: table => new
+                {
+                    MovementId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExhibitId = table.Column<int>(type: "int", nullable: false),
+                    FromStorageLocationId = table.Column<int>(type: "int", nullable: false),
+                    ToStorageLocationId = table.Column<int>(type: "int", nullable: false),
+                    MovementDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movements", x => x.MovementId);
+                    table.ForeignKey(
+                        name: "FK_Movements_Exhibit_ExhibitId",
+                        column: x => x.ExhibitId,
+                        principalTable: "Exhibit",
+                        principalColumn: "ExhibitId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Movements_StorageLocations_FromStorageLocationId",
+                        column: x => x.FromStorageLocationId,
+                        principalTable: "StorageLocations",
+                        principalColumn: "StorageLocationId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Movements_StorageLocations_ToStorageLocationId",
+                        column: x => x.ToStorageLocationId,
+                        principalTable: "StorageLocations",
+                        principalColumn: "StorageLocationId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Restorations",
+                columns: table => new
+                {
+                    RestorationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExhibitId = table.Column<int>(type: "int", nullable: false),
+                    RestorationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RestorerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Restorer = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Restorations", x => x.RestorationId);
+                    table.ForeignKey(
+                        name: "FK_Restorations_Exhibit_ExhibitId",
+                        column: x => x.ExhibitId,
+                        principalTable: "Exhibit",
+                        principalColumn: "ExhibitId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -378,14 +443,19 @@ namespace fly.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Exhibit_StorageLocationId",
+                table: "Exhibit",
+                column: "StorageLocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ExhibitInExhibition_ExhibitId",
                 table: "ExhibitInExhibition",
                 column: "ExhibitId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExhibitInExhibition_ExhibitionId",
-                table: "ExhibitInExhibition",
-                column: "ExhibitionId");
+                name: "IX_Insurances_ExhibitId",
+                table: "Insurances",
+                column: "ExhibitId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventories_ExhibitId",
@@ -393,14 +463,24 @@ namespace fly.Migrations
                 column: "ExhibitId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Visit_ExhibitionId",
-                table: "Visit",
-                column: "ExhibitionId");
+                name: "IX_Movements_ExhibitId",
+                table: "Movements",
+                column: "ExhibitId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Visit_VisitorId",
-                table: "Visit",
-                column: "VisitorId");
+                name: "IX_Movements_FromStorageLocationId",
+                table: "Movements",
+                column: "FromStorageLocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Movements_ToStorageLocationId",
+                table: "Movements",
+                column: "ToStorageLocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Restorations_ExhibitId",
+                table: "Restorations",
+                column: "ExhibitId");
         }
 
         /// <inheritdoc />
@@ -425,10 +505,16 @@ namespace fly.Migrations
                 name: "ExhibitInExhibition");
 
             migrationBuilder.DropTable(
+                name: "Insurances");
+
+            migrationBuilder.DropTable(
                 name: "Inventories");
 
             migrationBuilder.DropTable(
-                name: "Visit");
+                name: "Movements");
+
+            migrationBuilder.DropTable(
+                name: "Restorations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -437,19 +523,19 @@ namespace fly.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Exhibit");
-
-            migrationBuilder.DropTable(
                 name: "Exhibition");
 
             migrationBuilder.DropTable(
-                name: "Visitor");
+                name: "Exhibit");
 
             migrationBuilder.DropTable(
                 name: "Podrazdelenies");
 
             migrationBuilder.DropTable(
                 name: "Category");
+
+            migrationBuilder.DropTable(
+                name: "StorageLocations");
         }
     }
 }
