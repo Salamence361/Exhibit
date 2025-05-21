@@ -1,11 +1,24 @@
-﻿@model IEnumerable<fly.Models.Exhibit>
+﻿@{
+    var searchValue = ViewBag.SearchString as string ?? "";
+}
+
+<form asp-action="Index" method="get" class="form-inline my-2">
+    <input type="hidden" name="categoryId" value="@ViewBag.CategoryId" />
+    <input type="text" name="searchString" value="@searchValue" class="form-control mr-2" placeholder="Поиск по наименованию..." />
+    <button type="submit" class="btn btn-primary">Найти</button>
+</form>
+<br />
+
+
+
+
+@model IEnumerable<fly.Models.Exhibit>
 
 
 @{
     ViewData["Title"] = $"Экспонаты из категории: {ViewBag.CategoryName}";
 }
 
-<h1>Категории: @ViewBag.CategoryName</h1>
 
 
 <p>
@@ -23,8 +36,8 @@
                         <img src="@item.LogoPath" alt="Логотип" class="img-fluid exhibit-model-logo" />
                     </div>
                 }
-                <div class="exhibit-model-info position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center">
-                    <h5>@item.ExhibitName</h5>
+                <div class="exhibit-model-footer text-center">
+                    <h5 class="exhibit-model-title mb-2">@item.ExhibitName</h5>
                     <a asp-action="Index" asp-controller="ExhibitInExhibitions" asp-route-id="@item.ExhibitId" class="btn btn-sm btn-primary">Экспонат на выставке</a>
                     <a asp-action="Edit" asp-route-id="@item.ExhibitId" asp-route-CategoryId="@ViewBag.CategoryId" class="btn btn-sm btn-warning mb-2">Редактировать</a>
                     <a asp-action="Delete" asp-route-id="@item.ExhibitId" asp-route-CategoryId="@ViewBag.CategoryId" class="btn btn-sm btn-danger mb-2">Удалить</a>
@@ -44,16 +57,15 @@
             border-radius: 5px;
             transition: transform 0.3s;
             position: relative;
-            height: 200px; /* Фиксированная высота для карточек */
+            height: 300px; /* увеличена для подписи и кнопок */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
-            .exhibit-model-card:hover {
-                transform: scale(1.05);
-            }
-
         .exhibit-model-logo-container {
+            flex: 1 1 auto;
             width: 100%;
-            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -66,18 +78,16 @@
             transition: filter 0.3s;
         }
 
-        .exhibit-model-card:hover .exhibit-model-logo {
-            filter: blur(5px);
+        .exhibit-model-footer {
+            background: rgba(2, 2, 2, 0.05);
+            padding: 10px 5px 6px 5px;
+            border-top: 1px solid #eee;
+            box-shadow: 0 -2px 8px 0 rgba(200,200,200,0.05);
         }
 
-        .exhibit-model-info {
-            background-color: rgba(255, 255, 255, 0.8);
-            opacity: 0;
-            transition: opacity 0.3s;
+        .exhibit-model-title {
+            margin-bottom: 0.5rem;
         }
 
-        .exhibit-model-card:hover .exhibit-model-info {
-            opacity: 1;
-        }
     </style>
 }

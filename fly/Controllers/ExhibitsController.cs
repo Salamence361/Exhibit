@@ -26,25 +26,29 @@ namespace fly.Controllers
         }
 
         // GET: Exhibits
-        //[Authorize(Roles = "IT, Warehouse, Administration")]
-        public async Task<IActionResult> Index(int? categoryId)
-        {
-            if (categoryId == null)
-            {
-                var allExhibit = await _context.Exhibit.Include(c => c.Category).ToListAsync();
-                return View(allExhibit);
-            }
-            else
-            {
-                var modelsForCategory = await _context.Exhibit
-                    .Where(m => m.CategoryId == categoryId)
-                    .Include(c => c.Category)
-                    .ToListAsync();
-                ViewBag.CategoryId = categoryId;
-                ViewBag.CategoryName = _context.Categorys.FirstOrDefault(b => b.CategoryId == categoryId)?.Name;
-                return View(modelsForCategory);
-            }
-        }
+       public async Task<IActionResult> Index(int? categoryId, string searchString)
+{
+    // Получаем список категорий для выпадающего списка
+    ViewBag.Categories = new SelectList(_context.Categorys, "CategoryId", "Name", categoryId);
+
+    var exhibits = _context.Exhibit.Include(e => e.Category).AsQueryable();
+
+    // Фильтрация по категории
+    if (categoryId.HasValue && categoryId.Value != 0)
+    {
+        exhibits = exhibits.Where(e => e.CategoryId == categoryId);
+        ViewBag.CategoryId = categoryId;
+    }
+
+    // Поиск по наименованию (если реализовано)
+    if (!string.IsNullOrEmpty(searchString))
+    {
+        exhibits = exhibits.Where(e => e.ExhibitName.Contains(searchString));
+        ViewBag.SearchString = searchString;
+    }
+
+    return View(await exhibits.ToListAsync());
+}
 
         // GET: Exhibits/Details/5
         //[Authorize(Roles = "IT, Warehouse")]
