@@ -14,9 +14,6 @@ namespace fly.Models
         [Display(Name = "Название категории")]
         public string? Name { get; set; }
 
-        [Display(Name = "Логотип")]
-        public string? LogoPath { get; set; } 
-
         public string? Description { get; set; }
 
         public ICollection<Exhibit>? Exhibit { get; set; }

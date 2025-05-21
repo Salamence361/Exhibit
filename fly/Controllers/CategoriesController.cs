@@ -62,7 +62,7 @@ namespace fly.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles = "IT, Warehouse")]
-        public async Task<IActionResult> Create([Bind("CategoryId,Name,LogoPath,Description")] Category category, IFormFile logoFile)
+        public async Task<IActionResult> Create([Bind("CategoryId,Name,Description")] Category category)
         {
             if (ModelState.IsValid)
             {
@@ -75,17 +75,6 @@ namespace fly.Controllers
                     return View(category);
                 }
 
-                if (logoFile != null)
-                {
-                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "category");
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await logoFile.CopyToAsync(fileStream);
-                    }
-                    category.LogoPath = "/images/category/" + uniqueFileName;
-                }
 
                 _context.Add(category);
                 await _context.SaveChangesAsync();
@@ -114,7 +103,7 @@ namespace fly.Controllers
         // POST: Categories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name,LogoPath")] Category category, IFormFile logoFile)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name")] Category category)
         {
             if (id != category.CategoryId)
             {
@@ -134,17 +123,7 @@ namespace fly.Controllers
                         return View(category);
                     }
 
-                    if (logoFile != null)
-                    {
-                        string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "category");
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await logoFile.CopyToAsync(fileStream);
-                        }
-                        category.LogoPath = "/images/category/" + uniqueFileName;
-                    }
+                   
 
                     _context.Update(category);
                     await _context.SaveChangesAsync();

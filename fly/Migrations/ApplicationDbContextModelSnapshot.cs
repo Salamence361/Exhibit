@@ -244,9 +244,6 @@ namespace fly.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LogoPath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -504,10 +501,6 @@ namespace fly.Migrations
 
                     b.Property<DateTime>("RestorationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Restorer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RestorerName")
                         .IsRequired()

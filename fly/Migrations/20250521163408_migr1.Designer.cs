@@ -12,7 +12,7 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250519102704_migr1")]
+    [Migration("20250521163408_migr1")]
     partial class migr1
     {
         /// <inheritdoc />
@@ -245,9 +245,6 @@ namespace fly.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LogoPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -507,10 +504,6 @@ namespace fly.Migrations
 
                     b.Property<DateTime>("RestorationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Restorer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RestorerName")
                         .IsRequired()
