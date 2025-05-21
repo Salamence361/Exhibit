@@ -28,7 +28,7 @@ namespace fly.Controllers
        // [Authorize(Roles = "IT, Warehouse, Administration")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Category.ToListAsync());
+            return View(await _context.Categorys.ToListAsync());
         }
 
         // GET: Categories/Details/5
@@ -40,7 +40,7 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category
+            var category = await _context.Categorys
                 .FirstOrDefaultAsync(m => m.CategoryId == id);
             if (category == null)
             {
@@ -67,7 +67,7 @@ namespace fly.Controllers
             if (ModelState.IsValid)
             {
 
-                var existingCategory = await _context.Category
+                var existingCategory = await _context.Categorys
                     .FirstOrDefaultAsync(b => b.Name == category.Name);
                 if (existingCategory != null)
                 {
@@ -92,7 +92,7 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category.FindAsync(id);
+            var category = await _context.Categorys.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -115,7 +115,7 @@ namespace fly.Controllers
                 try
                 {
 
-                    var existingCategory = await _context.Category
+                    var existingCategory = await _context.Categorys
                         .FirstOrDefaultAsync(b => b.Name == category.Name && b.CategoryId != category.CategoryId);
                     if (existingCategory != null)
                     {
@@ -153,7 +153,7 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category
+            var category = await _context.Categorys
                 .FirstOrDefaultAsync(m => m.CategoryId == id);
             if (category == null)
             {
@@ -169,10 +169,10 @@ namespace fly.Controllers
         //[Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Category.FindAsync(id);
+            var category = await _context.Categorys.FindAsync(id);
             if (category != null)
             {
-                _context.Category.Remove(category);
+                _context.Categorys.Remove(category);
             }
 
             await _context.SaveChangesAsync();
@@ -181,7 +181,7 @@ namespace fly.Controllers
 
         private bool CategoryExists(int id)
         {
-            return _context.Category.Any(e => e.CategoryId == id);
+            return _context.Categorys.Any(e => e.CategoryId == id);
         }
 
     }

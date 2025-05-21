@@ -75,7 +75,12 @@ using (var scope = app.Services.CreateScope())
     var serviceProvider = scope.ServiceProvider;
     await InitData.InitializeAsync(serviceProvider);
     await RoleInitializer.InitializeAsync(serviceProvider);
+
+
+
 }
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

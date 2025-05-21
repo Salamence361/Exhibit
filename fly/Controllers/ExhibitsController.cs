@@ -41,7 +41,7 @@ namespace fly.Controllers
                     .Include(c => c.Category)
                     .ToListAsync();
                 ViewBag.CategoryId = categoryId;
-                ViewBag.CategoryName = _context.Category.FirstOrDefault(b => b.CategoryId == categoryId)?.Name;
+                ViewBag.CategoryName = _context.Categorys.FirstOrDefault(b => b.CategoryId == categoryId)?.Name;
                 return View(modelsForCategory);
             }
         }
@@ -67,37 +67,37 @@ namespace fly.Controllers
             return View(ExhibitModel);
         }
 
-        // GET: Exhibits/Create
-        //[Authorize(Roles = "IT, Warehouse")]
         public IActionResult Create(int? categoryId)
         {
             ViewBag.CategoryId = categoryId;
-            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", categoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", categoryId);
+            
             return View();
         }
 
         // POST: Exhibits/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Create([Bind("ExhibitId,CategoryId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
         {
             if (ModelState.IsValid)
             {
-                // Проверка на существование экспоната с таким же названием 
-                var existingExhibitModel = await _context.Exhibit
-                    .FirstOrDefaultAsync(cm => cm.ExhibitName == exhibit.ExhibitName  && cm.CategoryId == exhibit.CategoryId);
-                if (existingExhibitModel != null)
+                // Проверка на дубликаты
+                var existingExhibit = await _context.Exhibit
+                    .FirstOrDefaultAsync(e => e.ExhibitName == exhibit.ExhibitName && e.CategoryId == exhibit.CategoryId);
+                if (existingExhibit != null)
                 {
-                    ModelState.AddModelError("Name", "Модель с таким названием и годом выпуска уже существует.");
-                    ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+                    ModelState.AddModelError("ExhibitName", "Экспонат с таким названием уже существует в данной категории.");
+                    ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
                     return View(exhibit);
                 }
 
-                if (logoFile != null)
+                // Обработка файла
+                if (logoFile != null && logoFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "exhibit");
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
+                    Directory.CreateDirectory(uploadsFolder); // Создаём папку, если нет
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(logoFile.FileName);
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
@@ -110,7 +110,9 @@ namespace fly.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+            
+            
             return View(exhibit);
         }
 
@@ -154,7 +156,7 @@ namespace fly.Controllers
                     if (existingExhibitModel != null)
                     {
                         ModelState.AddModelError("Name", "Модель с таким названием и годом выпуска уже существует.");
-                        ViewData["CategoryList"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+                        ViewData["CategoryList"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
                         return View(exhibit);
                     }
 
@@ -186,7 +188,7 @@ namespace fly.Controllers
                 }
                 return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
-            ViewData["CategoryList"] = new SelectList(_context.Category, "CategoryId", "Name", exhibit.CategoryId);
+            ViewData["CategoryList"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
             return View(exhibit);
         }
 

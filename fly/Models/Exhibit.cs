@@ -12,7 +12,9 @@ namespace fly.Models
         public int ExhibitId { get; set; }
 
         public int CategoryId { get; set; }
-        
+
+        //public int StorageLocationId { get; set; }
+
         public Category? Category { get; set; }
 
         [Required(ErrorMessage = "Укажите название экспоната")]
@@ -49,11 +51,12 @@ namespace fly.Models
         [Display(Name = "Логотип")]
         public string? LogoPath { get; set; }
         [Display(Name = "Место хранения")]
-        public int StorageLocationId { get; set; }
+        
         public virtual ICollection<ExhibitInExhibition>? ExhibitInExhibitions { get; set; }
-        public virtual ICollection<Restoration>? Restoration { get; set; }
-        public StorageLocation StorageLocation { get; set; }
-        public List<Movement> Movements { get; set; }
+       
+        //public virtual ICollection<Restoration>? Restoration { get; set; }
+        
+       // public List<Movement> Movements { get; set; }
 
     }
 

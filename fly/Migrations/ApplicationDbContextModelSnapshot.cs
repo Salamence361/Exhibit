@@ -251,7 +251,7 @@ namespace fly.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categorys");
                 });
 
             modelBuilder.Entity("fly.Models.Exhibit", b =>
@@ -292,9 +292,6 @@ namespace fly.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("StorageLocationId")
-                        .HasColumnType("int");
-
                     b.Property<float?>("Weight")
                         .IsRequired()
                         .HasColumnType("real");
@@ -302,8 +299,6 @@ namespace fly.Migrations
                     b.HasKey("ExhibitId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("StorageLocationId");
 
                     b.ToTable("Exhibit");
                 });
@@ -538,6 +533,29 @@ namespace fly.Migrations
                     b.HasKey("StorageLocationId");
 
                     b.ToTable("StorageLocations");
+
+                    b.HasData(
+                        new
+                        {
+                            StorageLocationId = 1,
+                            Address = "ул. Музейная, 1",
+                            Description = "Основное место хранения экспонатов",
+                            Name = "Главное хранилище"
+                        },
+                        new
+                        {
+                            StorageLocationId = 2,
+                            Address = "ул. Склада, 2",
+                            Description = "Для временных экспонатов",
+                            Name = "Временное хранилище"
+                        },
+                        new
+                        {
+                            StorageLocationId = 3,
+                            Address = "ул. Архивная, 3",
+                            Description = "Архивное помещение",
+                            Name = "Архив"
+                        });
                 });
 
             modelBuilder.Entity("fly.Models.CustomUser", b =>
@@ -622,18 +640,10 @@ namespace fly.Migrations
                     b.HasOne("fly.Models.Category", "Category")
                         .WithMany("Exhibit")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("fly.Models.StorageLocation", "StorageLocation")
-                        .WithMany()
-                        .HasForeignKey("StorageLocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
-
-                    b.Navigation("StorageLocation");
                 });
 
             modelBuilder.Entity("fly.Models.ExhibitInExhibition", b =>
@@ -678,9 +688,9 @@ namespace fly.Migrations
             modelBuilder.Entity("fly.Models.Movement", b =>
                 {
                     b.HasOne("fly.Models.Exhibit", "Exhibit")
-                        .WithMany("Movements")
+                        .WithMany()
                         .HasForeignKey("ExhibitId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("fly.Models.StorageLocation", "FromStorageLocation")
@@ -705,7 +715,7 @@ namespace fly.Migrations
             modelBuilder.Entity("fly.Models.Restoration", b =>
                 {
                     b.HasOne("fly.Models.Exhibit", "Exhibit")
-                        .WithMany("Restoration")
+                        .WithMany()
                         .HasForeignKey("ExhibitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -732,10 +742,6 @@ namespace fly.Migrations
             modelBuilder.Entity("fly.Models.Exhibit", b =>
                 {
                     b.Navigation("ExhibitInExhibitions");
-
-                    b.Navigation("Movements");
-
-                    b.Navigation("Restoration");
                 });
 
             modelBuilder.Entity("fly.Models.Exhibition", b =>

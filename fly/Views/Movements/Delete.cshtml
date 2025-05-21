@@ -1,51 +1,52 @@
 ﻿@model fly.Models.Movement
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Удалить перемещение";
 }
 
-<h1>Delete</h1>
+<h1>Удалить перемещение</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Movement</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MovementDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MovementDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Exhibit)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Exhibit.ExhibitDescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FromStorageLocation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FromStorageLocation.StorageLocationId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ToStorageLocation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ToStorageLocation.StorageLocationId)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="MovementId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Вы уверены, что хотите удалить это перемещение?</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.ExhibitId)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Exhibit.ExhibitName)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.FromStorageLocationId)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.FromStorageLocation.Name)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.ToStorageLocationId)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.ToStorageLocation.Name)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.MovementDate)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.MovementDate)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Notes)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Notes)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="MovementId" />
+            <input type="submit" value="Удалить" class="btn btn-danger" />
+            <a asp-action="Index" class="btn btn-secondary">Вернуться к списку</a>
+        </form>
+    </div>
 </div>
