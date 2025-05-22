@@ -4,23 +4,16 @@
     ViewData["Title"] = "Редактирование экспоната";
 }
 
-
-
 <h1>Редактировать</h1>
 
 <h4>Экспонат</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ExhibitId" />
-            <input type="hidden" name="CategoryId" value="@ViewBag.CategoryId" />
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label">Категория</label>
-                <select asp-for="CategoryId" class="form-control" asp-items="@(ViewData["CategoryList"] as SelectList)"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="CategoryId" />
             <div class="form-group">
                 <label asp-for="StorageLocationId" class="control-label"></label>
                 <select asp-for="StorageLocationId" class="form-control" asp-items="ViewBag.StorageLocationId"></select>
@@ -62,13 +55,14 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Сохранить" class="btn btn-primary" /> |
-                <a asp-action="Index" asp-route-categoryId="@ViewBag.CategoryId">Вернуться к списку</a>
+                <a asp-action="Index" asp-route-categoryId="@Model.CategoryId">Вернуться к списку</a>
             </div>
         </form>
     </div>
 </div>
 
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
