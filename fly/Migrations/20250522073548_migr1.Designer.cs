@@ -12,7 +12,7 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250522063554_migr1")]
+    [Migration("20250522073548_migr1")]
     partial class migr1
     {
         /// <inheritdoc />
@@ -295,6 +295,9 @@ namespace fly.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("StorageLocationId")
+                        .HasColumnType("int");
+
                     b.Property<float?>("Weight")
                         .IsRequired()
                         .HasColumnType("real");
@@ -302,6 +305,8 @@ namespace fly.Migrations
                     b.HasKey("ExhibitId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("StorageLocationId");
 
                     b.ToTable("Exhibit");
                 });
@@ -650,7 +655,15 @@ namespace fly.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("fly.Models.StorageLocation", "StorageLocation")
+                        .WithMany("Exhibits")
+                        .HasForeignKey("StorageLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("StorageLocation");
                 });
 
             modelBuilder.Entity("fly.Models.ExhibitInExhibition", b =>
@@ -764,6 +777,8 @@ namespace fly.Migrations
 
             modelBuilder.Entity("fly.Models.StorageLocation", b =>
                 {
+                    b.Navigation("Exhibits");
+
                     b.Navigation("FromMovements");
 
                     b.Navigation("ToMovements");

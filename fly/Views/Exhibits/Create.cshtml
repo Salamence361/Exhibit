@@ -19,6 +19,11 @@
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="StorageLocationId" class="control-label"></label>
+                <select asp-for="StorageLocationId" class="form-control" asp-items="ViewBag.StorageLocationId"></select>
+                <span asp-validation-for="StorageLocationId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="ExhibitName" class="control-label"></label>
                 <input asp-for="ExhibitName" class="form-control" />
                 <span asp-validation-for="ExhibitName" class="text-danger"></span>

@@ -19,7 +19,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            
+            <th>
+                Количество экспонатов
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -35,9 +37,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
-                
                 <td>
-                    <a asp-controller="Exhibits" asp-action="Index" asp-route-id="@item.CategoryId">Экспонаты</a>|
+                    @item.Exhibit.Count()
+                </td>
+                <td>
+                    <a asp-controller="Exhibits" asp-action="Index" asp-route-categoryId="@item.CategoryId">Экспонаты</a>
                     <a asp-action="Edit" asp-route-id="@item.CategoryId">Редактировать</a> |
                     <a asp-action="Details" asp-route-id="@item.CategoryId">Просмотр</a> |
                     <a asp-action="Delete" asp-route-id="@item.CategoryId">Удалить</a>

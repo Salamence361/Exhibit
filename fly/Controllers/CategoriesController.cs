@@ -25,14 +25,18 @@ namespace fly.Controllers
         }
 
         // GET: Categories
-       // [Authorize(Roles = "IT, Warehouse, Administration")]
+        // [Authorize(Roles = "IT, Warehouse, Administration")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categorys.ToListAsync());
+            // Важно: добавляем Include, чтобы подгрузить экспонаты и избежать null в item.Exhibit
+            var categories = await _context.Categorys
+                .Include(c => c.Exhibit) // <-- добавлено
+                .ToListAsync();
+            return View(categories);
         }
 
         // GET: Categories/Details/5
-       // [Authorize(Roles = "IT, Warehouse")]
+        // [Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -40,7 +44,9 @@ namespace fly.Controllers
                 return NotFound();
             }
 
+            // Также Include, если хотите видеть экспонаты в Details
             var category = await _context.Categorys
+                .Include(c => c.Exhibit)
                 .FirstOrDefaultAsync(m => m.CategoryId == id);
             if (category == null)
             {
@@ -51,22 +57,20 @@ namespace fly.Controllers
         }
 
         // GET: Categories/Create
-        //[Authorize(Roles = "IT, Warehouse")]
+        // [Authorize(Roles = "IT, Warehouse")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Categories/Create
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "IT, Warehouse")]
+        // [Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Create([Bind("CategoryId,Name,Description")] Category category)
         {
             if (ModelState.IsValid)
             {
-
                 var existingCategory = await _context.Categorys
                     .FirstOrDefaultAsync(b => b.Name == category.Name);
                 if (existingCategory != null)
@@ -74,7 +78,6 @@ namespace fly.Controllers
                     ModelState.AddModelError("Name", "Категория с таким названием уже существует.");
                     return View(category);
                 }
-
 
                 _context.Add(category);
                 await _context.SaveChangesAsync();
@@ -84,7 +87,7 @@ namespace fly.Controllers
         }
 
         // GET: Categories/Edit/5
-       // [Authorize(Roles = "IT, Warehouse")]
+        // [Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -103,7 +106,7 @@ namespace fly.Controllers
         // POST: Categories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,Name,Description")] Category category)
         {
             if (id != category.CategoryId)
             {
@@ -114,7 +117,6 @@ namespace fly.Controllers
             {
                 try
                 {
-
                     var existingCategory = await _context.Categorys
                         .FirstOrDefaultAsync(b => b.Name == category.Name && b.CategoryId != category.CategoryId);
                     if (existingCategory != null)
@@ -122,8 +124,6 @@ namespace fly.Controllers
                         ModelState.AddModelError("Name", "Категория с таким названием уже существует.");
                         return View(category);
                     }
-
-                   
 
                     _context.Update(category);
                     await _context.SaveChangesAsync();
@@ -145,7 +145,7 @@ namespace fly.Controllers
         }
 
         // GET: Categories/Delete/5
-        //[Authorize(Roles = "IT, Warehouse")]
+        // [Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -154,6 +154,7 @@ namespace fly.Controllers
             }
 
             var category = await _context.Categorys
+                .Include(c => c.Exhibit) // <-- чтобы возможно выводить количество экспонатов при удалении
                 .FirstOrDefaultAsync(m => m.CategoryId == id);
             if (category == null)
             {
@@ -166,16 +167,25 @@ namespace fly.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "IT, Warehouse")]
+        // [Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categorys.FindAsync(id);
+            // !!! Изменено: удаляем категорию только если нет экспонатов !!!
+            var category = await _context.Categorys
+                .Include(c => c.Exhibit)
+                .FirstOrDefaultAsync(c => c.CategoryId == id);
+
             if (category != null)
             {
+                if (category.Exhibit != null && category.Exhibit.Any())
+                {
+                    ModelState.AddModelError(string.Empty, "Нельзя удалить категорию, в которой есть экспонаты.");
+                    return View("Delete", category);
+                }
                 _context.Categorys.Remove(category);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -183,6 +193,5 @@ namespace fly.Controllers
         {
             return _context.Categorys.Any(e => e.CategoryId == id);
         }
-
     }
 }

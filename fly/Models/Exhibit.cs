@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using OfficeOpenXml;
 
-
-
 namespace fly.Models
 {
     public class Exhibit
@@ -13,19 +11,21 @@ namespace fly.Models
 
         public int CategoryId { get; set; }
 
-        //public int StorageLocationId { get; set; }
+        // Добавляем связь с местом хранения
+        [Display(Name = "Место хранения")]
+        [Required(ErrorMessage = "Выберите место хранения")]
+        public int StorageLocationId { get; set; }
 
         public Category? Category { get; set; }
+        public StorageLocation? StorageLocation { get; set; }
 
         [Required(ErrorMessage = "Укажите название экспоната")]
         [Display(Name = "Название экспоната")]
         [StringLength(50, MinimumLength = 5)]
-
         public string ExhibitName { get; set; }
 
-        
         [Required(ErrorMessage = "Укажите описание экспоната")]
-        [Display (Name = "Описание экспоната" )]
+        [Display(Name = "Описание экспоната")]
         [StringLength(250)]
         public string ExhibitDescription { get; set; }
 
@@ -41,7 +41,6 @@ namespace fly.Models
         [Required(ErrorMessage = "Укажите размер")]
         [Display(Name = "Размер")]
         [StringLength(50)]
-        
         public string? Size { get; set; }
 
         [Display(Name = "Вес")]
@@ -50,18 +49,7 @@ namespace fly.Models
 
         [Display(Name = "Логотип")]
         public string? LogoPath { get; set; }
-        [Display(Name = "Место хранения")]
-        
+
         public virtual ICollection<ExhibitInExhibition>? ExhibitInExhibitions { get; set; }
-
-        //public virtual ICollection<Insurance> Insurances { get; set; }
-
-        //public virtual ICollection<Restoration>? Restoration { get; set; }
-
-        // public List<Movement> Movements { get; set; }
-
     }
-
-
-
 }

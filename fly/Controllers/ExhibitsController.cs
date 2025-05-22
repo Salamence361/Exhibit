@@ -29,7 +29,10 @@ namespace fly.Controllers
         {
             ViewBag.Categories = new SelectList(_context.Categorys, "CategoryId", "Name", categoryId);
 
-            var exhibits = _context.Exhibit.Include(e => e.Category).AsQueryable();
+            var exhibits = _context.Exhibit
+                .Include(e => e.Category)
+                .Include(e => e.StorageLocation)
+                .AsQueryable();
 
             if (categoryId.HasValue && categoryId.Value != 0)
             {
@@ -56,6 +59,7 @@ namespace fly.Controllers
 
             var ExhibitModel = await _context.Exhibit
                 .Include(c => c.Category)
+                .Include(e => e.StorageLocation)
                 .FirstOrDefaultAsync(m => m.ExhibitId == id);
             if (ExhibitModel == null)
             {
@@ -70,6 +74,7 @@ namespace fly.Controllers
         {
             ViewBag.CategoryId = categoryId;
             ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", categoryId);
+            ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name");
 
             return View();
         }
@@ -77,7 +82,7 @@ namespace fly.Controllers
         // POST: Exhibits/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExhibitId,CategoryId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
+        public async Task<IActionResult> Create([Bind("ExhibitId,CategoryId,StorageLocationId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
         {
             if (ModelState.IsValid)
             {
@@ -87,6 +92,7 @@ namespace fly.Controllers
                 {
                     ModelState.AddModelError("ExhibitName", "Экспонат с таким названием уже существует в данной категории.");
                     ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+                    ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name", exhibit.StorageLocationId);
                     return View(exhibit);
                 }
 
@@ -110,7 +116,7 @@ namespace fly.Controllers
                 var inventory = new Inventory
                 {
                     ExhibitId = exhibit.ExhibitId,
-                    ExhibitName = exhibit.ExhibitName, // сохраняем имя экспоната!
+                    ExhibitName = exhibit.ExhibitName,
                     поступления = DateTime.Now,
                     списания = null
                 };
@@ -121,6 +127,7 @@ namespace fly.Controllers
                 return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
             ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+            ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name", exhibit.StorageLocationId);
 
             return View(exhibit);
         }
@@ -133,20 +140,24 @@ namespace fly.Controllers
                 return NotFound();
             }
 
-            var ExhibitModel = await _context.Exhibit.FindAsync(id);
+            var ExhibitModel = await _context.Exhibit
+                .Include(e => e.StorageLocation)
+                .FirstOrDefaultAsync(e => e.ExhibitId == id);
             if (ExhibitModel == null)
             {
                 return NotFound();
             }
             ViewBag.CategoryId = categoryId;
-            ViewData["CategoryList"] = new SelectList(_context.Exhibit, "CategoryId", "Name", ExhibitModel.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", ExhibitModel.CategoryId);
+            ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name", ExhibitModel.StorageLocationId);
+
             return View(ExhibitModel);
         }
 
         // POST: Exhibits/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,CategoryId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
+        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,CategoryId,StorageLocationId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
         {
             if (id != exhibit.ExhibitId)
             {
@@ -162,7 +173,8 @@ namespace fly.Controllers
                     if (existingExhibitModel != null)
                     {
                         ModelState.AddModelError("Name", "Модель с таким названием и годом выпуска уже существует.");
-                        ViewData["CategoryList"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+                        ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+                        ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name", exhibit.StorageLocationId);
                         return View(exhibit);
                     }
 
@@ -194,7 +206,9 @@ namespace fly.Controllers
                 }
                 return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
-            ViewData["CategoryList"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+            ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name", exhibit.StorageLocationId);
+
             return View(exhibit);
         }
 
@@ -208,6 +222,7 @@ namespace fly.Controllers
 
             var exhibit = await _context.Exhibit
                 .Include(e => e.Category)
+                .Include(e => e.StorageLocation)
                 .FirstOrDefaultAsync(m => m.ExhibitId == id);
             if (exhibit == null)
             {
@@ -215,6 +230,9 @@ namespace fly.Controllers
             }
 
             ViewBag.CategoryId = categoryId;
+            ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
+            ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name", exhibit.StorageLocationId);
+
             return View(exhibit);
         }
 
@@ -226,11 +244,10 @@ namespace fly.Controllers
             var exhibit = await _context.Exhibit.FindAsync(id);
             if (exhibit != null)
             {
-                // === ДОБАВЛЕНИЕ В РЕГИСТР НАКОПЛЕНИЯ (Inventory) ===
                 var inventory = new Inventory
                 {
                     ExhibitId = exhibit.ExhibitId,
-                    ExhibitName = exhibit.ExhibitName, // сохраняем имя экспоната!
+                    ExhibitName = exhibit.ExhibitName,
                     поступления = null,
                     списания = DateTime.Now
                 };

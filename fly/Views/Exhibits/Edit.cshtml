@@ -15,11 +15,16 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ExhibitId" />
-            <input type="hidden" name="brandId" value="@ViewBag.CategoryId" />
+            <input type="hidden" name="CategoryId" value="@ViewBag.CategoryId" />
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label">Марка</label>
+                <label asp-for="CategoryId" class="control-label">Категория</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="@(ViewData["CategoryList"] as SelectList)"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StorageLocationId" class="control-label"></label>
+                <select asp-for="StorageLocationId" class="form-control" asp-items="ViewBag.StorageLocationId"></select>
+                <span asp-validation-for="StorageLocationId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ExhibitName" class="control-label"></label>
