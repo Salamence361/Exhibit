@@ -252,6 +252,38 @@ namespace fly.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categorys");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            Description = "Картины, написанные маслом, акварелью и другими техниками.",
+                            Name = "Живопись"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            Description = "Трёхмерные произведения искусства из различных материалов.",
+                            Name = "Скульптура"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            Description = "Изделия, сочетающие утилитарную функцию и художественную ценность.",
+                            Name = "Декоративно-прикладное искусство"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            Description = "Рисунки, гравюры и литографии на бумаге.",
+                            Name = "Графика"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            Description = "Исторические и современные фотографии, представляющие художественную ценность.",
+                            Name = "Фотография"
+                        });
                 });
 
             modelBuilder.Entity("fly.Models.Exhibit", b =>
@@ -440,10 +472,6 @@ namespace fly.Migrations
 
                     b.Property<DateTime>("MovementDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ToStorageLocationId")
                         .HasColumnType("int");

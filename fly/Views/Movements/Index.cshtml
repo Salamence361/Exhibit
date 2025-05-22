@@ -1,87 +1,92 @@
 ﻿@model IEnumerable<fly.Models.Movement>
-
 @{
-    ViewData["Title"] = "История перемещений";
+    ViewData["Title"] = "Перемещения экспонатов";
+    var isPdf = Context.Request.Query["isPdf"].ToString() == "true";
 }
 
-<h1>История перемещений</h1>
+@if (!isPdf)
+{
+    <h1>Журнал перемещений экспонатов</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Добавить новое перемещение</a>
-</p>
-<div class="table-responsive">
-    <table class="table table-movement">
-        <thead>
+    <form id="filterForm" method="get" asp-action="Index" class="mb-3">
+        <div class="form-row align-items-end">
+            <div class="form-group col-md-4">
+                <label>Экспонат:</label>
+                <select name="exhibitId" class="form-control">
+                    <option value="">Все</option>
+                    @foreach (var exhibit in ((SelectList)ViewBag.Exhibits).Items.Cast<fly.Models.Exhibit>())
+                    {
+                        var isSelected = Context.Request.Query["exhibitId"] == exhibit.ExhibitId.ToString();
+                        //<option value="@exhibit.ExhibitId" @(isSelected ? "selected" : "")>@exhibit.ExhibitName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label>Дата перемещения (с):</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" value="@Context.Request.Query["startDate"]" />
+            </div>
+            <div class="form-group col-md-4">
+                <label>Дата перемещения (по):</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" value="@Context.Request.Query["endDate"]" />
+            </div>
+        </div>
+
+        <div class="form-row mt-3">
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-primary mr-2">Фильтровать</button>
+                <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистить фильтры</button>
+            </div>
+        </div>
+    </form>
+
+    <p>
+        <a asp-action="DownloadPdf"
+           asp-route-startDate="@Context.Request.Query["startDate"]"
+           asp-route-endDate="@Context.Request.Query["endDate"]"
+           asp-route-exhibitId="@Context.Request.Query["exhibitId"]"
+           asp-route-isPdf="true"
+           class="btn btn-danger">Скачать отчет в PDF</a>
+    </p>
+}
+
+<h1>Журнал перемещений экспонатов</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Экспонат</th>
+            <th>Из хранилища</th>
+            <th>В хранилище</th>
+            <th>Дата перемещения</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>@Html.DisplayNameFor(model => model.ExhibitId)</th>
-                <th>@Html.DisplayNameFor(model => model.FromStorageLocationId)</th>
-                <th>@Html.DisplayNameFor(model => model.ToStorageLocationId)</th>
-                <th>@Html.DisplayNameFor(model => model.MovementDate)</th>
-                <th>@Html.DisplayNameFor(model => model.Notes)</th>
-                <th>Действия</th>
+                <td>@(item.Exhibit?.ExhibitName ?? "-")</td>
+                <td>@(item.FromStorageLocation?.Name ?? "-")</td>
+                <td>@(item.ToStorageLocation?.Name ?? "-")</td>
+                <td>@item.MovementDate.ToString("dd.MM.yyyy HH:mm")</td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FromStorageLocation.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.ToStorageLocation.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.MovementDate)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Notes)</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.MovementId">Редактировать</a> |
-                        <a asp-action="Delete" asp-route-id="@item.MovementId">Удалить</a> |
-                        <a asp-action="GenerateReport" asp-route-id="@item.MovementId" class="btn btn-secondary">Скачать отчет PDF</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
+
+<div class="footer">
+    <p>Сформировано @DateTime.Now.ToString("dd MMMM yyyy")</p>
 </div>
-@section Styles {
-    <style>
-        .table-movement {
-            background-color: #ede3d1 !important; /* темно-бежевый, как в реставрациях */
-            color: #473e2a;
-            border-radius: 10px;
-            overflow: hidden;
-            font-family: 'Segoe UI', 'Arial', 'Helvetica Neue', Arial, sans-serif;
-            font-weight: 500;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            letter-spacing: 0.01em;
-        }
 
-            .table-movement th {
-                background-color: #ccb899 !important;
-                color: #473e2a !important;
-                font-weight: 700;
-                border-color: #b3a07b;
-                font-size: 1.08em;
-                text-shadow: 0 1px 1px #e5decf;
+@if (!isPdf)
+{
+    @section Scripts {
+        <script>
+            function clearFilters() {
+                document.getElementById('startDate').value = '';
+                document.getElementById('endDate').value = '';
+                document.getElementsByName('exhibitId')[0].selectedIndex = 0;
+                document.getElementById('filterForm').submit();
             }
-
-            .table-movement td, .table-movement th {
-                border-color: #b3a07b;
-                vertical-align: middle;
-                text-align: center;
-                font-weight: 600;
-                font-size: 1.03em;
-            }
-
-            .table-movement tr {
-                transition: background 0.2s;
-            }
-
-            .table-movement tbody tr:hover {
-                background-color: #e2d3bc !important;
-                color: #2c261a;
-            }
-
-        .table-responsive {
-            border-radius: 10px;
-        }
-    </style>
+        </script>
+    }
 }

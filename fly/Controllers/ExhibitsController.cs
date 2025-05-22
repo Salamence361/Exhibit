@@ -151,13 +151,16 @@ namespace fly.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", ExhibitModel.CategoryId);
             ViewData["StorageLocationId"] = new SelectList(_context.StorageLocations, "StorageLocationId", "Name", ExhibitModel.StorageLocationId);
 
+            // Для отслеживания перемещений: сохраним старое значение StorageLocationId
+            ViewBag.OldStorageLocationId = ExhibitModel.StorageLocationId;
+
             return View(ExhibitModel);
         }
 
         // POST: Exhibits/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,CategoryId,StorageLocationId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
+        public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,CategoryId,StorageLocationId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile, int? oldStorageLocationId)
         {
             if (id != exhibit.ExhibitId)
             {
@@ -178,10 +181,25 @@ namespace fly.Controllers
                         return View(exhibit);
                     }
 
-                    if (logoFile != null)
+                    // Получение старого значения StorageLocationId для отслеживания перемещений
+                    int oldStorageLocation;
+                    if (oldStorageLocationId.HasValue)
+                    {
+                        oldStorageLocation = oldStorageLocationId.Value;
+                    }
+                    else
+                    {
+                        oldStorageLocation = await _context.Exhibit.AsNoTracking()
+                            .Where(e => e.ExhibitId == id)
+                            .Select(e => e.StorageLocationId)
+                            .FirstOrDefaultAsync();
+                    }
+
+                    if (logoFile != null && logoFile.Length > 0)
                     {
                         string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "exhibit");
-                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + logoFile.FileName;
+                        Directory.CreateDirectory(uploadsFolder);
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(logoFile.FileName);
                         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                         using (var fileStream = new FileStream(filePath, FileMode.Create))
                         {
@@ -189,9 +207,31 @@ namespace fly.Controllers
                         }
                         exhibit.LogoPath = "/images/exhibit/" + uniqueFileName;
                     }
+                    else
+                    {
+                        // Не затираем логотип, если не выбран новый файл
+                        var oldExhibit = await _context.Exhibit.AsNoTracking().FirstOrDefaultAsync(e => e.ExhibitId == id);
+                        if (oldExhibit != null)
+                            exhibit.LogoPath = oldExhibit.LogoPath;
+                    }
 
                     _context.Update(exhibit);
                     await _context.SaveChangesAsync();
+
+                    // === Добавление записи о перемещении, если изменено место хранения ===
+                    if (oldStorageLocation != exhibit.StorageLocationId)
+                    {
+                        var movement = new Movement
+                        {
+                            ExhibitId = exhibit.ExhibitId,
+                            FromStorageLocationId = oldStorageLocation,
+                            ToStorageLocationId = exhibit.StorageLocationId,
+                            MovementDate = DateTime.Now
+                        };
+                        _context.Movements.Add(movement);
+                        await _context.SaveChangesAsync();
+                    }
+                    // === Конец добавления ===
                 }
                 catch (DbUpdateConcurrencyException)
                 {

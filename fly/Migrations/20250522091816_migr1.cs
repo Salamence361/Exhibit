@@ -342,8 +342,7 @@ namespace fly.Migrations
                     ExhibitId = table.Column<int>(type: "int", nullable: false),
                     FromStorageLocationId = table.Column<int>(type: "int", nullable: false),
                     ToStorageLocationId = table.Column<int>(type: "int", nullable: false),
-                    MovementDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MovementDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -391,6 +390,18 @@ namespace fly.Migrations
                         principalTable: "Exhibit",
                         principalColumn: "ExhibitId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categorys",
+                columns: new[] { "CategoryId", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Картины, написанные маслом, акварелью и другими техниками.", "Живопись" },
+                    { 2, "Трёхмерные произведения искусства из различных материалов.", "Скульптура" },
+                    { 3, "Изделия, сочетающие утилитарную функцию и художественную ценность.", "Декоративно-прикладное искусство" },
+                    { 4, "Рисунки, гравюры и литографии на бумаге.", "Графика" },
+                    { 5, "Исторические и современные фотографии, представляющие художественную ценность.", "Фотография" }
                 });
 
             migrationBuilder.InsertData(
