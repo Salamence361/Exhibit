@@ -12,8 +12,8 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250522091816_migr1")]
-    partial class migr1
+    [Migration("20250522101540_museum")]
+    partial class museum
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

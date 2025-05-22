@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace fly.Migrations
 {
     /// <inheritdoc />
-    public partial class migr1 : Migration
+    public partial class museum : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

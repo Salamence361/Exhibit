@@ -11,7 +11,6 @@ namespace fly.Models
 
         public int CategoryId { get; set; }
 
-        // Добавляем связь с местом хранения
         [Display(Name = "Место хранения")]
         [Required(ErrorMessage = "Выберите место хранения")]
         public int StorageLocationId { get; set; }

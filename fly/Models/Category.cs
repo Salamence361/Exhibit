@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 namespace fly.Models
 {

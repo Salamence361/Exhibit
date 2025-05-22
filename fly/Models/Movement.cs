@@ -19,8 +19,6 @@ namespace fly.Models
         [Display(Name = "Дата перемещения")]
         public DateTime MovementDate { get; set; }
 
-        
-
         [BindNever]
         public Exhibit? Exhibit { get; set; }
         [BindNever]
