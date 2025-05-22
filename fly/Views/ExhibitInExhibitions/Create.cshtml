@@ -1,41 +1,23 @@
 ﻿@model fly.Models.ExhibitInExhibition
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Добавить экспонат на выставку";
 }
 
-<h1>Создать</h1>
+<h2>Добавить экспонат на выставку "@ViewData["ExhibitionName"]"</h2>
 
-<h4>ExhibitInExhibition</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ExhibitId" class="control-label"></label>
-                <input type="hidden" name="ExhibitId" class ="form-control" value="@ViewBag.ExhibitId">
-            </div>
-            <div class="form-group">
-                <label asp-for="ExhibitionId" class="control-label"></label>
-                <select asp-for="ExhibitionId" class ="form-control" asp-items="ViewBag.ExhibitionId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="PlacementDate" class="control-label"></label>
-                <input asp-for="PlacementDate" class="form-control" />
-                <span asp-validation-for="PlacementDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Создать" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="ExhibitId" class="control-label">Экспонат</label>
+        <select asp-for="ExhibitId" class="form-control" asp-items="ViewBag.ExhibitId"></select>
+        <span asp-validation-for="ExhibitId" class="text-danger"></span>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" asp-route-id="@ViewBag.ExhibitId">Возврат к списку</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <input type="hidden" asp-for="ExhibitionId" value="@ViewData["ExhibitionId"]" />
+    <div class="form-group">
+        <label asp-for="PlacementDate" class="control-label"></label>
+        <input asp-for="PlacementDate" class="form-control" />
+        <span asp-validation-for="PlacementDate" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+    <a asp-controller="Exhibitions" asp-action="Details" asp-route-id="@ViewData["ExhibitionId"]" class="btn btn-secondary">Назад</a>
+</form>

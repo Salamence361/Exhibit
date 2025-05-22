@@ -20,20 +20,27 @@ namespace fly.Controllers
         }
 
         // GET: ExhibitInExhibitions
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? exhibitionId)
         {
-            if (id == null)
+            if (exhibitionId == null)
             {
                 return NotFound();
             }
 
-            var applicationDbContext = _context.ExhibitInExhibition.Where(t=>t.ExhibitId==id).Include(e => e.Exhibit);
+            var exhibition = await _context.Exhibition.FirstOrDefaultAsync(e => e.ExhibitionId == exhibitionId);
+            if (exhibition == null)
+            {
+                return NotFound();
+            }
 
+            ViewBag.ExhibitionName = exhibition.ExhibitionName;
+            ViewBag.ExhibitionId = exhibitionId;
 
-            string Exhibit = _context.Exhibit.FirstOrDefault(t => t.ExhibitId == id).ExhibitName;
-            ViewBag.Exhibit = Exhibit;
-            ViewBag.ExhibitId = id;
-            return View(await applicationDbContext.ToListAsync());
+            var exhibitInExhibitions = _context.ExhibitInExhibition
+                .Include(x => x.Exhibit)
+                .Where(x => x.ExhibitionId == exhibitionId);
+
+            return View(await exhibitInExhibitions.ToListAsync());
         }
 
         // GET: ExhibitInExhibitions/Details/5
@@ -56,22 +63,17 @@ namespace fly.Controllers
             return View(exhibitInExhibition);
         }
 
-        // GET: ExhibitInExhibitions/Create
-        public IActionResult Create(int? id)
+        public IActionResult Create(int? exhibitionId)
         {
-            if (id == null)
-            {
+            if (exhibitionId == null)
                 return NotFound();
-            }
 
-            ViewData["ExhibitId"] = id;
-            ViewData["ExhibitionId"] = new SelectList(_context.Exhibition, "ExhibitionId", "ExhibitionId");
+            ViewBag.ExhibitionId = exhibitionId;
+            ViewBag.ExhibitionName = _context.Exhibition.FirstOrDefault(e => e.ExhibitionId == exhibitionId)?.ExhibitionName;
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitName");
             return View();
         }
 
-        // POST: ExhibitInExhibitions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ExhibitInExhibitionId,ExhibitId,ExhibitionId,PlacementDate")] ExhibitInExhibition exhibitInExhibition)
@@ -80,42 +82,35 @@ namespace fly.Controllers
             {
                 _context.Add(exhibitInExhibition);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { id = exhibitInExhibition.ExhibitId });
+                return RedirectToAction(nameof(Index), new { exhibitionId = exhibitInExhibition.ExhibitionId });
             }
-            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitId", exhibitInExhibition.ExhibitId);
-            ViewData["ExhibitionId"] = new SelectList(_context.Exhibition, "ExhibitionId", "ExhibitionId", exhibitInExhibition.ExhibitionId);
+            ViewBag.ExhibitionId = exhibitInExhibition.ExhibitionId;
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitName", exhibitInExhibition.ExhibitId);
             return View(exhibitInExhibition);
         }
 
-        // GET: ExhibitInExhibitions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var exhibitInExhibition = await _context.ExhibitInExhibition.FindAsync(id);
+            var exhibitInExhibition = await _context.ExhibitInExhibition
+                .Include(e => e.Exhibition)
+                .FirstOrDefaultAsync(e => e.ExhibitInExhibitionId == id);
             if (exhibitInExhibition == null)
-            {
                 return NotFound();
-            }
-            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitId", exhibitInExhibition.ExhibitId);
-            ViewData["ExhibitionId"] = new SelectList(_context.Exhibition, "ExhibitionId", "ExhibitionId", exhibitInExhibition.ExhibitionId);
+
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitName", exhibitInExhibition.ExhibitId);
+            ViewData["ExhibitionId"] = exhibitInExhibition.ExhibitionId;
             return View(exhibitInExhibition);
         }
 
-        // POST: ExhibitInExhibitions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ExhibitInExhibitionId,ExhibitId,ExhibitionId,PlacementDate")] ExhibitInExhibition exhibitInExhibition)
         {
             if (id != exhibitInExhibition.ExhibitInExhibitionId)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -127,52 +122,42 @@ namespace fly.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ExhibitInExhibitionExists(exhibitInExhibition.ExhibitInExhibitionId))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                return RedirectToAction(nameof(Index), new { id = exhibitInExhibition.ExhibitId });
+                return RedirectToAction("Details", "Exhibitions", new { id = exhibitInExhibition.ExhibitionId });
             }
-            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitId", exhibitInExhibition.ExhibitId);
-            ViewData["ExhibitionId"] = new SelectList(_context.Exhibition, "ExhibitionId", "ExhibitionId", exhibitInExhibition.ExhibitionId);
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitName", exhibitInExhibition.ExhibitId);
+            ViewData["ExhibitionId"] = exhibitInExhibition.ExhibitionId;
             return View(exhibitInExhibition);
         }
 
-        // GET: ExhibitInExhibitions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var exhibitInExhibition = await _context.ExhibitInExhibition
                 .Include(e => e.Exhibit)
                 .Include(e => e.Exhibition)
                 .FirstOrDefaultAsync(m => m.ExhibitInExhibitionId == id);
             if (exhibitInExhibition == null)
-            {
                 return NotFound();
-            }
 
             return View(exhibitInExhibition);
         }
 
-        // POST: ExhibitInExhibitions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var exhibitInExhibition = await _context.ExhibitInExhibition.FindAsync(id);
+            int exhibitionId = exhibitInExhibition.ExhibitionId;
             _context.ExhibitInExhibition.Remove(exhibitInExhibition);
-
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index), new { id = exhibitInExhibition.ExhibitId }); 
+            return RedirectToAction("Details", "Exhibitions", new { id = exhibitionId });
         }
 
         private bool ExhibitInExhibitionExists(int id)

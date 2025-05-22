@@ -1,39 +1,17 @@
 ﻿@model fly.Models.ExhibitInExhibition
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Удалить экспонат с выставки";
 }
 
-<h1>Удаление</h1>
-
-<h3>Вы уверены что хотите это сделать?</h3>
+<h2>Удалить экспонат с выставки</h2>
 <div>
-    
+    <h4>Экспонат: @Model.Exhibit?.ExhibitName</h4>
+    <h5>Выставка: @Model.Exhibition?.ExhibitionName</h5>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Exhibit)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Exhibit.ExhibitId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Exhibition)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Exhibition.ExhibitionId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PlacementDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PlacementDate)
-        </dd>
-    </dl>
-    
     <form asp-action="Delete">
         <input type="hidden" asp-for="ExhibitInExhibitionId" />
-        <input type="submit" value="Удалить" class="btn btn-danger" /> |
-        <a asp-action="Index" asp-route-id="@Model.ExhibitId">Возврат к списку</a>
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a asp-controller="Exhibitions" asp-action="Details" asp-route-id="@Model.ExhibitionId" class="btn btn-secondary">Отмена</a>
     </form>
 </div>
