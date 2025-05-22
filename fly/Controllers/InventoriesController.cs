@@ -5,17 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using fly.Data;
-using fly.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using DinkToPdf.Contracts;
-using fly.Services;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using fly.Data;
+using fly.Models;
+using fly.Services;
 
-
-namespace fly.Controllers
+namespace Auto.Controllers
 {
     public class InventoriesController : Controller
     {
@@ -33,7 +32,7 @@ namespace fly.Controllers
         }
 
         // GET: Inventories
-        //[Authorize(Roles = "IT, Warehouse, Administration, Procurement")]
+        
         public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate, DateTime? writeOffStartDate, DateTime? writeOffEndDate)
         {
             var inventoriesQuery = _context.Inventories.Include(i => i.Exhibit).AsQueryable();
@@ -63,8 +62,8 @@ namespace fly.Controllers
             return View(inventories);
         }
 
-        //[HttpGet]
-        //[Authorize(Roles = "IT, Warehouse, Administration")]
+        [HttpGet]
+       
         public async Task<IActionResult> DownloadPdf(DateTime? startDate, DateTime? endDate, DateTime? writeOffStartDate, DateTime? writeOffEndDate)
         {
             var inventoriesQuery = _context.Inventories.Include(i => i.Exhibit).AsQueryable();

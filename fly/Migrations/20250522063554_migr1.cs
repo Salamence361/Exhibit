@@ -225,11 +225,10 @@ namespace fly.Migrations
                 {
                     InventoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
                     поступления = table.Column<DateTime>(type: "datetime2", nullable: true),
                     списания = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PartId = table.Column<int>(type: "int", nullable: false),
-                    ExhibitId = table.Column<int>(type: "int", nullable: true)
+                    ExhibitId = table.Column<int>(type: "int", nullable: true),
+                    ExhibitName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -238,7 +237,8 @@ namespace fly.Migrations
                         name: "FK_Inventories_Exhibit_ExhibitId",
                         column: x => x.ExhibitId,
                         principalTable: "Exhibit",
-                        principalColumn: "ExhibitId");
+                        principalColumn: "ExhibitId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -391,9 +391,10 @@ namespace fly.Migrations
                 columns: new[] { "StorageLocationId", "Address", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, "ул. Музейная, 1", "Основное место хранения экспонатов", "Главное хранилище" },
-                    { 2, "ул. Склада, 2", "Для временных экспонатов", "Временное хранилище" },
-                    { 3, "ул. Архивная, 3", "Архивное помещение", "Архив" }
+                    { 1, "ул. Музейная, 15", "Основное место хранения экспонатов", "Главное хранилище" },
+                    { 2, "ул. Склада, 22", "Для временных экспонатов", "Временное хранилище" },
+                    { 3, "ул. Архивная, 31", "Архивное помещение", "Архив" },
+                    { 4, "ул. Архивная, 321", "Резервное хранилище", "Зал 3" }
                 });
 
             migrationBuilder.CreateIndex(

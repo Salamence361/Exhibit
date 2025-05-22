@@ -66,6 +66,12 @@ namespace fly.Data
                 .HasForeignKey(m => m.ToStorageLocationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Inventory>()
+          .HasOne(i => i.Exhibit)
+          .WithMany()
+          .HasForeignKey(i => i.ExhibitId)
+          .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<StorageLocation>().HasData(
        new StorageLocation { StorageLocationId = 1, Name = "Главное хранилище", Description = "Основное место хранения экспонатов", Address = "ул. Музейная, 15" },
        new StorageLocation { StorageLocationId = 2, Name = "Временное хранилище", Description = "Для временных экспонатов", Address = "ул. Склада, 22" },

@@ -12,7 +12,7 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250522044923_migr1")]
+    [Migration("20250522063554_migr1")]
     partial class migr1
     {
         /// <inheritdoc />
@@ -406,11 +406,8 @@ namespace fly.Migrations
                     b.Property<int?>("ExhibitId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PartId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<string>("ExhibitName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("поступления")
                         .HasColumnType("datetime2");
@@ -541,23 +538,30 @@ namespace fly.Migrations
                         new
                         {
                             StorageLocationId = 1,
-                            Address = "ул. Музейная, 1",
+                            Address = "ул. Музейная, 15",
                             Description = "Основное место хранения экспонатов",
                             Name = "Главное хранилище"
                         },
                         new
                         {
                             StorageLocationId = 2,
-                            Address = "ул. Склада, 2",
+                            Address = "ул. Склада, 22",
                             Description = "Для временных экспонатов",
                             Name = "Временное хранилище"
                         },
                         new
                         {
                             StorageLocationId = 3,
-                            Address = "ул. Архивная, 3",
+                            Address = "ул. Архивная, 31",
                             Description = "Архивное помещение",
                             Name = "Архив"
+                        },
+                        new
+                        {
+                            StorageLocationId = 4,
+                            Address = "ул. Архивная, 321",
+                            Description = "Резервное хранилище",
+                            Name = "Зал 3"
                         });
                 });
 
@@ -683,7 +687,8 @@ namespace fly.Migrations
                 {
                     b.HasOne("fly.Models.Exhibit", "Exhibit")
                         .WithMany()
-                        .HasForeignKey("ExhibitId");
+                        .HasForeignKey("ExhibitId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Exhibit");
                 });

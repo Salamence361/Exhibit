@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -26,32 +25,28 @@ namespace fly.Controllers
         }
 
         // GET: Exhibits
-       public async Task<IActionResult> Index(int? categoryId, string searchString)
-{
-    // Получаем список категорий для выпадающего списка
-    ViewBag.Categories = new SelectList(_context.Categorys, "CategoryId", "Name", categoryId);
+        public async Task<IActionResult> Index(int? categoryId, string searchString)
+        {
+            ViewBag.Categories = new SelectList(_context.Categorys, "CategoryId", "Name", categoryId);
 
-    var exhibits = _context.Exhibit.Include(e => e.Category).AsQueryable();
+            var exhibits = _context.Exhibit.Include(e => e.Category).AsQueryable();
 
-    // Фильтрация по категории
-    if (categoryId.HasValue && categoryId.Value != 0)
-    {
-        exhibits = exhibits.Where(e => e.CategoryId == categoryId);
-        ViewBag.CategoryId = categoryId;
-    }
+            if (categoryId.HasValue && categoryId.Value != 0)
+            {
+                exhibits = exhibits.Where(e => e.CategoryId == categoryId);
+                ViewBag.CategoryId = categoryId;
+            }
 
-    // Поиск по наименованию (если реализовано)
-    if (!string.IsNullOrEmpty(searchString))
-    {
-        exhibits = exhibits.Where(e => e.ExhibitName.Contains(searchString));
-        ViewBag.SearchString = searchString;
-    }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                exhibits = exhibits.Where(e => e.ExhibitName.Contains(searchString));
+                ViewBag.SearchString = searchString;
+            }
 
-    return View(await exhibits.ToListAsync());
-}
+            return View(await exhibits.ToListAsync());
+        }
 
         // GET: Exhibits/Details/5
-        //[Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Details(int? id, int? categoryId)
         {
             if (id == null)
@@ -75,7 +70,7 @@ namespace fly.Controllers
         {
             ViewBag.CategoryId = categoryId;
             ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", categoryId);
-            
+
             return View();
         }
 
@@ -86,7 +81,6 @@ namespace fly.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Проверка на дубликаты
                 var existingExhibit = await _context.Exhibit
                     .FirstOrDefaultAsync(e => e.ExhibitName == exhibit.ExhibitName && e.CategoryId == exhibit.CategoryId);
                 if (existingExhibit != null)
@@ -96,11 +90,10 @@ namespace fly.Controllers
                     return View(exhibit);
                 }
 
-                // Обработка файла
                 if (logoFile != null && logoFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "exhibit");
-                    Directory.CreateDirectory(uploadsFolder); // Создаём папку, если нет
+                    Directory.CreateDirectory(uploadsFolder);
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(logoFile.FileName);
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -112,16 +105,27 @@ namespace fly.Controllers
 
                 _context.Add(exhibit);
                 await _context.SaveChangesAsync();
+
+                // === ДОБАВЛЕНИЕ В РЕГИСТР НАКОПЛЕНИЯ (Inventory) ===
+                var inventory = new Inventory
+                {
+                    ExhibitId = exhibit.ExhibitId,
+                    ExhibitName = exhibit.ExhibitName, // сохраняем имя экспоната!
+                    поступления = DateTime.Now,
+                    списания = null
+                };
+                _context.Inventories.Add(inventory);
+                await _context.SaveChangesAsync();
+                // === КОНЕЦ ДОБАВЛЕНИЯ ===
+
                 return RedirectToAction(nameof(Index), new { categoryId = exhibit.CategoryId });
             }
             ViewData["CategoryId"] = new SelectList(_context.Categorys, "CategoryId", "Name", exhibit.CategoryId);
-            
-            
+
             return View(exhibit);
         }
 
         // GET: Exhibits/Edit/5
-        //[Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Edit(int? id, int? categoryId)
         {
             if (id == null)
@@ -142,7 +146,6 @@ namespace fly.Controllers
         // POST: Exhibits/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Edit(int id, [Bind("ExhibitId,CategoryId,ExhibitName,ExhibitDescription,CreationDate,Material,Size,Weight,LogoPath")] Exhibit exhibit, IFormFile logoFile)
         {
             if (id != exhibit.ExhibitId)
@@ -154,9 +157,8 @@ namespace fly.Controllers
             {
                 try
                 {
-                    // Проверка на существование экспоната с таким же названием 
                     var existingExhibitModel = await _context.Exhibit
-                        .FirstOrDefaultAsync(cm => cm.ExhibitName == exhibit.ExhibitName && cm.CategoryId == exhibit.CategoryId);
+                        .FirstOrDefaultAsync(cm => cm.ExhibitName == exhibit.ExhibitName && cm.CategoryId == exhibit.CategoryId && cm.ExhibitId != exhibit.ExhibitId);
                     if (existingExhibitModel != null)
                     {
                         ModelState.AddModelError("Name", "Модель с таким названием и годом выпуска уже существует.");
@@ -197,7 +199,6 @@ namespace fly.Controllers
         }
 
         // GET: Exhibits/Delete/5
-        //[Authorize(Roles = "IT, Warehouse")]
         public async Task<IActionResult> Delete(int? id, int? categoryId)
         {
             if (id == null)
@@ -225,11 +226,21 @@ namespace fly.Controllers
             var exhibit = await _context.Exhibit.FindAsync(id);
             if (exhibit != null)
             {
+                // === ДОБАВЛЕНИЕ В РЕГИСТР НАКОПЛЕНИЯ (Inventory) ===
+                var inventory = new Inventory
+                {
+                    ExhibitId = exhibit.ExhibitId,
+                    ExhibitName = exhibit.ExhibitName, // сохраняем имя экспоната!
+                    поступления = null,
+                    списания = DateTime.Now
+                };
+                _context.Inventories.Add(inventory);
+
                 _context.Exhibit.Remove(exhibit);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new {id = exhibit.CategoryId });
+            return RedirectToAction(nameof(Index), new { categoryId = exhibit?.CategoryId });
         }
 
         private bool ExhibitExists(int id)

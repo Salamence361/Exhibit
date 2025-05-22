@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<fly.Models.Inventory>
 
 @{
-    ViewData["Title"] = "История движения экспонатов";
+    ViewData["Title"] = "Инвентаризация экспонатов";
     var isPdf = Context.Request.Query["isPdf"].ToString() == "true";
 }
 
 @if (!isPdf)
 {
-    <h1>История движения экспонатов</h1>
+    <h1>История поступления экспонатов</h1>
 
     <form id="filterForm" method="get" asp-action="Index" class="mb-3">
         <div class="form-row align-items-end">
@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="form-group col-md-6">
-                <label>Дата перемещения:</label>
+                <label>Дата списания:</label>
                 <div class="input-group">
                     <input type="date" id="writeOffStartDate" name="writeOffStartDate" class="form-control" placeholder="с" />
                     <span class="mx-2"> </span>
@@ -43,23 +43,24 @@
     </p>
 }
 
-<h1>История движения экспонатов</h1>
+<h1>История поступления экспонатов</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>Экспонат</th>
             <th>Дата поступления</th>
-            <th>Дата перемещения</th>
+            <th>Дата списания</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Where(i => i.Quantity != 0))
+       @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)</td>
+                <td>@(item.ExhibitName ?? item.Exhibit?.ExhibitName ?? "-")</td>
                 <td>@Html.DisplayFor(modelItem => item.поступления)</td>
                 <td>@Html.DisplayFor(modelItem => item.списания)</td>
+                
             </tr>
         }
     </tbody>
