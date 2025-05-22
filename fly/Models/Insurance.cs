@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace fly.Models
 {
     public class Insurance
@@ -23,7 +24,7 @@ namespace fly.Models
 
         [Display(Name = "Сумма покрытия")]
         public decimal CoverageAmount { get; set; }
-
-        public Exhibit Exhibit { get; set; }
+       
+        public Exhibit? Exhibit { get; set; }
     }
 }

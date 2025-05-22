@@ -67,9 +67,10 @@ namespace fly.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<StorageLocation>().HasData(
-       new StorageLocation { StorageLocationId = 1, Name = "Главное хранилище", Description = "Основное место хранения экспонатов", Address = "ул. Музейная, 1" },
-       new StorageLocation { StorageLocationId = 2, Name = "Временное хранилище", Description = "Для временных экспонатов", Address = "ул. Склада, 2" },
-       new StorageLocation { StorageLocationId = 3, Name = "Архив", Description = "Архивное помещение", Address = "ул. Архивная, 3" }
+       new StorageLocation { StorageLocationId = 1, Name = "Главное хранилище", Description = "Основное место хранения экспонатов", Address = "ул. Музейная, 15" },
+       new StorageLocation { StorageLocationId = 2, Name = "Временное хранилище", Description = "Для временных экспонатов", Address = "ул. Склада, 22" },
+       new StorageLocation { StorageLocationId = 3, Name = "Архив", Description = "Архивное помещение", Address = "ул. Архивная, 31" },
+       new StorageLocation { StorageLocationId = 4, Name = "Зал 3", Description = "Резервное хранилище", Address = "ул. Архивная, 321" }
    );
         }
     }

@@ -27,7 +27,7 @@
                 <td>@item.PolicyNumber</td>
                 <td>@item.StartDate.ToShortDateString()</td>
                 <td>@item.EndDate.ToShortDateString()</td>
-                <td>@item.CoverageAmount.ToString("C")</td>
+                <td>@item.CoverageAmount</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.InsuranceId">Редактировать</a> |
                     <a asp-action="Delete" asp-route-id="@item.InsuranceId">Удалить</a>

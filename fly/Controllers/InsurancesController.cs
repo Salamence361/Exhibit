@@ -17,30 +17,13 @@ namespace fly.Controllers
             _context = context;
         }
 
-        // GET: Insurances
         public async Task<IActionResult> Index()
         {
-            var insurances = _context.Insurances.Include(i => i.Exhibit);
-            return View(await insurances.ToListAsync());
-        }
-
-        // GET: Insurances/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
             var insurance = await _context.Insurances
-                .Include(i => i.Exhibit)
-                .FirstOrDefaultAsync(m => m.InsuranceId == id);
-
-            if (insurance == null)
-                return NotFound();
-
+                .Include(r => r.Exhibit)
+                .ToListAsync();
             return View(insurance);
         }
-
-
 
 
         // GET: Insurances/Create
@@ -60,7 +43,7 @@ namespace fly.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("InsuranceId,ExhibitId,InsuranceCompany,PolicyNumber,StartDate,EndDate,CoverageAmount")] Insurance insurance)
         {
-            Console.WriteLine($"Received POST request for Restoration: ExhibitId={insurance.ExhibitId}");
+            
             if (ModelState.IsValid)
             {
                 Console.WriteLine("Model state is valid, loading related entities...");
