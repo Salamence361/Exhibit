@@ -147,8 +147,8 @@ namespace fly.Areas.Identity.Pages.Account
                             case "Кладовщики":
                                 await _userManager.AddToRoleAsync(user, "Warehouse");
                                 break;
-                            case "Отдел закупок":
-                                await _userManager.AddToRoleAsync(user, "Procurement");
+                            case "Реставрация":
+                                await _userManager.AddToRoleAsync(user, "Restorer");
                                 break;
                             case "Администрация":
                                 await _userManager.AddToRoleAsync(user, "Administration");

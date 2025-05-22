@@ -14,7 +14,7 @@ namespace fly.Data
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<CustomUser>>();
 
-            string[] roleNames = { "IT", "Warehouse", "Procurement", "Administration" };
+            string[] roleNames = { "IT", "Warehouse", "Restorer", "Administration" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)

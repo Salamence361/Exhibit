@@ -29,7 +29,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireITRole", policy => policy.RequireRole("IT"));
     options.AddPolicy("RequireWarehouseRole", policy => policy.RequireRole("Warehouse"));
-    options.AddPolicy("RequireProcurementRole", policy => policy.RequireRole("Procurement"));
+    options.AddPolicy("RequireRestorerRole", policy => policy.RequireRole("Restorer"));
     options.AddPolicy("RequireAdministrationRole", policy => policy.RequireRole("Administration"));
 });
 
