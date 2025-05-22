@@ -1,0 +1,82 @@
+﻿@model fly.Models.Exhibit
+
+@{
+    ViewData["Title"] = "Детали экспоната";
+}
+
+<h1>Просмотр экспоната</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Категория
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Category?.Name
+        </dd>
+
+        <dt class="col-sm-2">
+            Место хранения
+        </dt>
+        <dd class="col-sm-10">
+            @Model.StorageLocation?.Name
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ExhibitName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ExhibitName)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ExhibitDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ExhibitDescription)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Material)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Material)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Size)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Size)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Weight)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Weight)
+        </dd>
+
+        @if (!string.IsNullOrEmpty(Model.LogoPath))
+        {
+            <dt class="col-sm-2">
+                Логотип
+            </dt>
+            <dd class="col-sm-10">
+                <img src="@Model.LogoPath" alt="Логотип экспоната" style="max-width:200px;max-height:200px;" />
+            </dd>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ExhibitId" asp-route-categoryId="@Model.CategoryId">Редактировать</a> |
+    <a asp-action="Index" asp-route-categoryId="@Model.CategoryId">Возврат к списку</a>
+</div>

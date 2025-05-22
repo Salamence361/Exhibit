@@ -1,4 +1,7 @@
-﻿@{
+﻿@model IEnumerable<fly.Models.Exhibit>
+
+@{
+    ViewData["Title"] = $"Экспонаты из категории: {ViewBag.CategoryName}";
     var searchValue = ViewBag.SearchString as string ?? "";
 }
 
@@ -9,20 +12,8 @@
 </form>
 <br />
 
-
-
-
-@model IEnumerable<fly.Models.Exhibit>
-
-
-@{
-    ViewData["Title"] = $"Экспонаты из категории: {ViewBag.CategoryName}";
-}
-
-
-
 <p>
-    <a asp-action="Create" asp-route-brandId="@ViewBag.CategoryId" class="btn btn-primary">Добавить новый экспонат</a>
+    <a asp-action="Create" asp-route-categoryId="@ViewBag.CategoryId" class="btn btn-primary">Добавить новый экспонат</a>
 </p>
 
 <div class="row">
@@ -38,9 +29,10 @@
                 }
                 <div class="exhibit-model-footer text-center">
                     <h5 class="exhibit-model-title mb-2">@item.ExhibitName</h5>
-                    <a asp-action="Index" asp-controller="ExhibitInExhibitions" asp-route-id="@item.ExhibitId" class="btn btn-sm btn-primary">Экспонат на выставке</a>
-                    <a asp-action="Edit" asp-route-id="@item.ExhibitId" asp-route-CategoryId="@ViewBag.CategoryId" class="btn btn-sm btn-warning mb-2">Редактировать</a>
-                    <a asp-action="Delete" asp-route-id="@item.ExhibitId" asp-route-CategoryId="@ViewBag.CategoryId" class="btn btn-sm btn-danger mb-2">Удалить</a>
+
+                    <a asp-action="Details" asp-route-id="@item.ExhibitId" asp-route-categoryId="@ViewBag.CategoryId" class="btn btn-sm btn-info mb-2">Информация</a>
+                    <a asp-action="Edit" asp-route-id="@item.ExhibitId" asp-route-categoryId="@ViewBag.CategoryId" class="btn btn-sm btn-warning mb-2">Редактировать</a>
+                    <a asp-action="Delete" asp-route-id="@item.ExhibitId" asp-route-categoryId="@ViewBag.CategoryId" class="btn btn-sm btn-danger mb-2">Удалить</a>
                 </div>
             </div>
         </div>
