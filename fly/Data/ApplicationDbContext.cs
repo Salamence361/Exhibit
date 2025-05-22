@@ -78,6 +78,39 @@ namespace fly.Data
        new StorageLocation { StorageLocationId = 3, Name = "Архив", Description = "Архивное помещение", Address = "ул. Архивная, 31" },
        new StorageLocation { StorageLocationId = 4, Name = "Зал 3", Description = "Резервное хранилище", Address = "ул. Архивная, 321" }
    );
+            modelBuilder.Entity<Category>().HasData(
+    new Category
+    {
+        CategoryId = 1,
+        Name = "Живопись",
+        Description = "Картины, написанные маслом, акварелью и другими техниками."
+    },
+    new Category
+    {
+        CategoryId = 2,
+        Name = "Скульптура",
+        Description = "Трёхмерные произведения искусства из различных материалов."
+    },
+    new Category
+    {
+        CategoryId = 3,
+        Name = "Декоративно-прикладное искусство",
+        Description = "Изделия, сочетающие утилитарную функцию и художественную ценность."
+    },
+    new Category
+    {
+        CategoryId = 4,
+        Name = "Графика",
+        Description = "Рисунки, гравюры и литографии на бумаге."
+    },
+    new Category
+    {
+        CategoryId = 5,
+        Name = "Фотография",
+        Description = "Исторические и современные фотографии, представляющие художественную ценность."
+    }
+);
+
         }
     }
 }

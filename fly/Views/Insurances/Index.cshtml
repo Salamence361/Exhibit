@@ -6,33 +6,80 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Добавить страхование</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Exhibit.ExhibitDescription)</th>
-            <th>@Html.DisplayNameFor(model => model.InsuranceCompany)</th>
-            <th>@Html.DisplayNameFor(model => model.PolicyNumber)</th>
-            <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-            <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-            <th>@Html.DisplayNameFor(model => model.CoverageAmount)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-insurance">
+        <thead>
             <tr>
-                <td>@item.Exhibit?.ExhibitDescription</td>
-                <td>@item.InsuranceCompany</td>
-                <td>@item.PolicyNumber</td>
-                <td>@item.StartDate.ToShortDateString()</td>
-                <td>@item.EndDate.ToShortDateString()</td>
-                <td>@item.CoverageAmount</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.InsuranceId">Редактировать</a> |
-                    <a asp-action="Delete" asp-route-id="@item.InsuranceId">Удалить</a>
-                </td>
+                <th>@Html.DisplayNameFor(model => model.Exhibit.ExhibitDescription)</th>
+                <th>@Html.DisplayNameFor(model => model.InsuranceCompany)</th>
+                <th>@Html.DisplayNameFor(model => model.PolicyNumber)</th>
+                <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                <th>@Html.DisplayNameFor(model => model.CoverageAmount)</th>
+                <th></th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Exhibit?.ExhibitDescription</td>
+                    <td>@item.InsuranceCompany</td>
+                    <td>@item.PolicyNumber</td>
+                    <td>@item.StartDate.ToShortDateString()</td>
+                    <td>@item.EndDate.ToShortDateString()</td>
+                    <td>@item.CoverageAmount</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.InsuranceId">Редактировать</a> |
+                        <a asp-action="Delete" asp-route-id="@item.InsuranceId">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Styles {
+    <style>
+        .table-insurance {
+            background-color: #ede3d1 !important; /* темно-бежевый */
+            color: #473e2a;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial', 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 500;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 0.01em;
         }
-    </tbody>
-</table>
+
+            .table-insurance th {
+                background-color: #ccb899 !important;
+                color: #473e2a !important;
+                font-weight: 700;
+                border-color: #b3a07b;
+                font-size: 1.08em;
+                text-shadow: 0 1px 1px #e5decf;
+            }
+
+            .table-insurance td, .table-insurance th {
+                border-color: #b3a07b;
+                vertical-align: middle;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.03em;
+            }
+
+            .table-insurance tr {
+                transition: background 0.2s;
+            }
+
+            .table-insurance tbody tr:hover {
+                background-color: #e2d3bc !important;
+                color: #2c261a;
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+        }
+    </style>
+}

@@ -9,29 +9,76 @@
     <a asp-action="Create" asp-route-exhibitionId="@ViewBag.ExhibitionId" class="btn btn-primary">Добавить экспонат на выставку</a>
 </p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Экспонат</th>
-            <th>Дата размещения</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-exhibit-in-exhibition">
+        <thead>
             <tr>
-                <td>@item.Exhibit?.ExhibitName</td>
-                <td>@item.PlacementDate?.ToShortDateString()</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ExhibitInExhibitionId">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.ExhibitInExhibitionId">Просмотр</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ExhibitInExhibitionId">Удалить</a>
-                </td>
+                <th>Экспонат</th>
+                <th>Дата размещения</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Exhibit?.ExhibitName</td>
+                    <td>@item.PlacementDate?.ToShortDateString()</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ExhibitInExhibitionId">Редактировать</a> |
+                        <a asp-action="Details" asp-route-id="@item.ExhibitInExhibitionId">Просмотр</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ExhibitInExhibitionId">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 <p>
     <a asp-controller="Exhibitions" asp-action="Index" class="btn btn-secondary">Назад к выставкам</a>
 </p>
+@section Styles {
+    <style>
+        .table-exhibit-in-exhibition {
+            background-color: #ede3d1 !important; /* темно-бежевый */
+            color: #473e2a;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial', 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 500;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 0.01em;
+        }
+
+            .table-exhibit-in-exhibition th {
+                background-color: #ccb899 !important;
+                color: #473e2a !important;
+                font-weight: 700;
+                border-color: #b3a07b;
+                font-size: 1.08em;
+                text-shadow: 0 1px 1px #e5decf;
+            }
+
+            .table-exhibit-in-exhibition td, .table-exhibit-in-exhibition th {
+                border-color: #b3a07b;
+                vertical-align: middle;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.03em;
+            }
+
+            .table-exhibit-in-exhibition tr {
+                transition: background 0.2s;
+            }
+
+            .table-exhibit-in-exhibition tbody tr:hover {
+                background-color: #e2d3bc !important;
+                color: #2c261a;
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+        }
+    </style>
+}

@@ -4,49 +4,91 @@
     ViewData["Title"] = "Index";
 }
 
-
-
 <p>
-    <a asp-action="Create">Добавить новую категорию</a>
+    <a asp-action="Create" class="btn btn-primary">Добавить новую категорию</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                Количество экспонатов
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-category">
+        <thead>
             <tr>
-
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @item.Exhibit.Count()
-                </td>
-                <td>
-                    <a asp-controller="Exhibits" asp-action="Index" asp-route-categoryId="@item.CategoryId">Экспонаты</a>
-                    <a asp-action="Edit" asp-route-id="@item.CategoryId">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.CategoryId">Просмотр</a> |
-                    <a asp-action="Delete" asp-route-id="@item.CategoryId">Удалить</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    Количество экспонатов
+                </th>
+                <th></th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @item.Exhibit.Count()
+                    </td>
+                    <td>
+                        <a asp-controller="Exhibits" asp-action="Index" asp-route-categoryId="@item.CategoryId">Экспонаты</a>
+                        <a asp-action="Edit" asp-route-id="@item.CategoryId">Редактировать</a> |
+                        <a asp-action="Details" asp-route-id="@item.CategoryId">Просмотр</a> |
+                        <a asp-action="Delete" asp-route-id="@item.CategoryId">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Styles {
+    <style>
+        .table-category {
+            background-color: #ede3d1 !important; /* темно-бежевый */
+            color: #473e2a;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial', 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 500;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 0.01em;
         }
-    </tbody>
-</table>
+
+            .table-category th {
+                background-color: #ccb899 !important;
+                color: #473e2a !important;
+                font-weight: 700;
+                border-color: #b3a07b;
+                font-size: 1.08em;
+                text-shadow: 0 1px 1px #e5decf;
+            }
+
+            .table-category td, .table-category th {
+                border-color: #b3a07b;
+                vertical-align: middle;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.03em;
+            }
+
+            .table-category tr {
+                transition: background 0.2s;
+            }
+
+            .table-category tbody tr:hover {
+                background-color: #e2d3bc !important;
+                color: #2c261a;
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+        }
+    </style>
+}

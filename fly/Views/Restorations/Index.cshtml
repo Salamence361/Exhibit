@@ -9,37 +9,82 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Добавить новую реставрацию</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.ExhibitId)</th>
-            <th>@Html.DisplayNameFor(model => model.RestorationDate)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th>@Html.DisplayNameFor(model => model.RestorerName)</th>
-            <th>@Html.DisplayNameFor(model => model.IsApproved)</th>
-            <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-            <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-            
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-restoration">
+        <thead>
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)</td>
-                <td>@Html.DisplayFor(modelItem => item.RestorationDate)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                <td>@Html.DisplayFor(modelItem => item.RestorerName)</td>
-                <td>@Html.DisplayFor(modelItem => item.IsApproved)</td>
-                <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
-                <td>@Html.DisplayFor(modelItem => item.EndDate)</td>
-                
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.RestorationId">Редактировать</a> |
-                    <a asp-action="Delete" asp-route-id="@item.RestorationId">Удалить</a>
-                </td>
+                <th>@Html.DisplayNameFor(model => model.ExhibitId)</th>
+                <th>@Html.DisplayNameFor(model => model.RestorationDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.RestorerName)</th>
+                <th>@Html.DisplayNameFor(model => model.IsApproved)</th>
+                <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                <th>Действия</th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RestorationDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RestorerName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.IsApproved)</td>
+                    <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.EndDate)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.RestorationId">Редактировать</a> |
+                        <a asp-action="Delete" asp-route-id="@item.RestorationId">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Styles {
+    <style>
+        .table-restoration {
+            background-color: #ede3d1 !important; /* темно-бежевый */
+            color: #473e2a;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial', 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 500;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 0.01em;
         }
-    </tbody>
-</table>
+
+            .table-restoration th {
+                background-color: #ccb899 !important;
+                color: #473e2a !important;
+                font-weight: 700;
+                border-color: #b3a07b;
+                font-size: 1.08em;
+                text-shadow: 0 1px 1px #e5decf;
+            }
+
+            .table-restoration td, .table-restoration th {
+                border-color: #b3a07b;
+                vertical-align: middle;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.03em;
+            }
+
+            .table-restoration tr {
+                transition: background 0.2s;
+            }
+
+            .table-restoration tbody tr:hover {
+                background-color: #e2d3bc !important;
+                color: #2c261a;
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+        }
+    </style>
+}

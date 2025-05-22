@@ -9,32 +9,79 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Добавить новое перемещение</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.ExhibitId)</th>
-            <th>@Html.DisplayNameFor(model => model.FromStorageLocationId)</th>
-            <th>@Html.DisplayNameFor(model => model.ToStorageLocationId)</th>
-            <th>@Html.DisplayNameFor(model => model.MovementDate)</th>
-            <th>@Html.DisplayNameFor(model => model.Notes)</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-movement">
+        <thead>
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)</td>
-                <td>@Html.DisplayFor(modelItem => item.FromStorageLocation.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.ToStorageLocation.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.MovementDate)</td>
-                <td>@Html.DisplayFor(modelItem => item.Notes)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MovementId">Редактировать</a> |
-                    <a asp-action="Delete" asp-route-id="@item.MovementId">Удалить</a> |
-                    <a asp-action="GenerateReport" asp-route-id="@item.MovementId" class="btn btn-secondary">Скачать отчет PDF</a>
-                </td>
+                <th>@Html.DisplayNameFor(model => model.ExhibitId)</th>
+                <th>@Html.DisplayNameFor(model => model.FromStorageLocationId)</th>
+                <th>@Html.DisplayNameFor(model => model.ToStorageLocationId)</th>
+                <th>@Html.DisplayNameFor(model => model.MovementDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Notes)</th>
+                <th>Действия</th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Exhibit.ExhibitName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FromStorageLocation.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ToStorageLocation.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MovementDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Notes)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.MovementId">Редактировать</a> |
+                        <a asp-action="Delete" asp-route-id="@item.MovementId">Удалить</a> |
+                        <a asp-action="GenerateReport" asp-route-id="@item.MovementId" class="btn btn-secondary">Скачать отчет PDF</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Styles {
+    <style>
+        .table-movement {
+            background-color: #ede3d1 !important; /* темно-бежевый, как в реставрациях */
+            color: #473e2a;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial', 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 500;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 0.01em;
         }
-    </tbody>
-</table>
+
+            .table-movement th {
+                background-color: #ccb899 !important;
+                color: #473e2a !important;
+                font-weight: 700;
+                border-color: #b3a07b;
+                font-size: 1.08em;
+                text-shadow: 0 1px 1px #e5decf;
+            }
+
+            .table-movement td, .table-movement th {
+                border-color: #b3a07b;
+                vertical-align: middle;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.03em;
+            }
+
+            .table-movement tr {
+                transition: background 0.2s;
+            }
+
+            .table-movement tbody tr:hover {
+                background-color: #e2d3bc !important;
+                color: #2c261a;
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+        }
+    </style>
+}

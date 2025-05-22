@@ -4,56 +4,103 @@
     ViewData["Title"] = "Index";
 }
 
-
-
 <p>
-    <a asp-action="Create">Добавить новый</a>
+    <a asp-action="Create" class="btn btn-primary">Добавить новый</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ExhibitionName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExhibitionDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Venue)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExhibitionName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExhibitionDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Venue)
-            </td>
-            <td>
-                    <a asp-controller="ExhibitInExhibitions" asp-action="Index" asp-route-exhibitionId="@item.ExhibitionId">Экспонаты на выставке</a>
-                <a asp-action="Edit" asp-route-id="@item.ExhibitionId">Редактировать</a> |
-                <a asp-action="Delete" asp-route-id="@item.ExhibitionId">Удалить</a>
-            </td>
-        </tr>
+<div class="table-responsive">
+    <table class="table table-exhibition">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExhibitionName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExhibitionDescription)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Venue)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExhibitionName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExhibitionDescription)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Venue)
+                    </td>
+                    <td>
+                        <a asp-controller="ExhibitInExhibitions" asp-action="Index" asp-route-exhibitionId="@item.ExhibitionId">Экспонаты на выставке</a>
+                        <a asp-action="Edit" asp-route-id="@item.ExhibitionId">Редактировать</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ExhibitionId">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Styles {
+    <style>
+        /* Улучшение четкости шрифта и жирности для таблицы */
+        .table-exhibition {
+            background-color: #ede3d1 !important; /* темно-бежевый */
+            color: #473e2a;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial', 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 500;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 0.01em;
+        }
+
+            .table-exhibition th {
+                background-color: #ccb899 !important;
+                color: #473e2a !important;
+                font-weight: 700;
+                border-color: #b3a07b;
+                font-size: 1.08em;
+                text-shadow: 0 1px 1px #e5decf;
+            }
+
+            .table-exhibition td, .table-exhibition th {
+                border-color: #b3a07b;
+                vertical-align: middle;
+                text-align: center;
+                font-weight: 600;
+                font-size: 1.03em;
+            }
+
+            .table-exhibition tr {
+                transition: background 0.2s;
+            }
+
+            .table-exhibition tbody tr:hover {
+                background-color: #e2d3bc !important;
+                color: #2c261a;
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+        }
+    </style>
 }
-    </tbody>
-</table>
