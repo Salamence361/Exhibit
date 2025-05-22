@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,81 +20,90 @@ namespace fly.Controllers
         // GET: Insurances
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Insurances.Include(i => i.Exhibit);
-            return View(await applicationDbContext.ToListAsync());
+            var insurances = _context.Insurances.Include(i => i.Exhibit);
+            return View(await insurances.ToListAsync());
         }
 
         // GET: Insurances/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var insurance = await _context.Insurances
                 .Include(i => i.Exhibit)
                 .FirstOrDefaultAsync(m => m.InsuranceId == id);
+
             if (insurance == null)
-            {
                 return NotFound();
-            }
 
             return View(insurance);
         }
 
+
+
+
         // GET: Insurances/Create
+
         public IActionResult Create()
         {
-            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitDescription");
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitName");
             return View();
         }
 
         // POST: Insurances/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+
+
         [HttpPost]
+
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("InsuranceId,ExhibitId,InsuranceCompany,PolicyNumber,StartDate,EndDate,CoverageAmount")] Insurance insurance)
         {
+            Console.WriteLine($"Received POST request for Restoration: ExhibitId={insurance.ExhibitId}");
             if (ModelState.IsValid)
             {
+                Console.WriteLine("Model state is valid, loading related entities...");
+                insurance.Exhibit = await _context.Exhibit.FindAsync(insurance.ExhibitId);
+                if (insurance.Exhibit == null)
+                {
+                    ModelState.AddModelError("", "Exhibit not found.");
+                    ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitName", insurance.ExhibitId);
+                    return View(insurance);
+                }
+                Console.WriteLine("Related entities loaded, saving to database...");
                 _context.Add(insurance);
                 await _context.SaveChangesAsync();
+                Console.WriteLine("Save successful, redirecting to Index...");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitDescription", insurance.ExhibitId);
+            Console.WriteLine("Model state is invalid. Errors: " + string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitName", insurance.ExhibitId);
             return View(insurance);
         }
+
 
         // GET: Insurances/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var insurance = await _context.Insurances.FindAsync(id);
             if (insurance == null)
-            {
                 return NotFound();
-            }
+
             ViewData["ExhibitId"] = new SelectList(_context.Exhibit, "ExhibitId", "ExhibitDescription", insurance.ExhibitId);
             return View(insurance);
         }
 
         // POST: Insurances/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("InsuranceId,ExhibitId,InsuranceCompany,PolicyNumber,StartDate,EndDate,CoverageAmount")] Insurance insurance)
         {
             if (id != insurance.InsuranceId)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -108,13 +115,9 @@ namespace fly.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!InsuranceExists(insurance.InsuranceId))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -126,17 +129,14 @@ namespace fly.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var insurance = await _context.Insurances
                 .Include(i => i.Exhibit)
                 .FirstOrDefaultAsync(m => m.InsuranceId == id);
+
             if (insurance == null)
-            {
                 return NotFound();
-            }
 
             return View(insurance);
         }
@@ -148,9 +148,7 @@ namespace fly.Controllers
         {
             var insurance = await _context.Insurances.FindAsync(id);
             if (insurance != null)
-            {
                 _context.Insurances.Remove(insurance);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

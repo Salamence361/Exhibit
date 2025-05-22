@@ -12,7 +12,7 @@ using fly.Data;
 namespace fly.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250521174518_migr1")]
+    [Migration("20250522044923_migr1")]
     partial class migr1
     {
         /// <inheritdoc />

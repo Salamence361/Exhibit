@@ -1,65 +1,38 @@
 ﻿@model IEnumerable<fly.Models.Insurance>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Страхование экспонатов";
 }
 
-<h1>Index</h1>
-
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Добавить страхование</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.InsuranceCompany)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PolicyNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CoverageAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Exhibit)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.Exhibit.ExhibitDescription)</th>
+            <th>@Html.DisplayNameFor(model => model.InsuranceCompany)</th>
+            <th>@Html.DisplayNameFor(model => model.PolicyNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+            <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+            <th>@Html.DisplayNameFor(model => model.CoverageAmount)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.InsuranceCompany)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PolicyNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CoverageAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Exhibit.ExhibitDescription)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.InsuranceId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.InsuranceId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.InsuranceId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Exhibit?.ExhibitDescription</td>
+                <td>@item.InsuranceCompany</td>
+                <td>@item.PolicyNumber</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate.ToShortDateString()</td>
+                <td>@item.CoverageAmount.ToString("C")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.InsuranceId">Редактировать</a> |
+                    <a asp-action="Delete" asp-route-id="@item.InsuranceId">Удалить</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

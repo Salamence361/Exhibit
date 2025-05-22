@@ -53,10 +53,12 @@ namespace fly.Models
         [Display(Name = "Место хранения")]
         
         public virtual ICollection<ExhibitInExhibition>? ExhibitInExhibitions { get; set; }
-       
+
+        //public virtual ICollection<Insurance> Insurances { get; set; }
+
         //public virtual ICollection<Restoration>? Restoration { get; set; }
-        
-       // public List<Movement> Movements { get; set; }
+
+        // public List<Movement> Movements { get; set; }
 
     }
 

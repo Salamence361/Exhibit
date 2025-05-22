@@ -15,10 +15,10 @@ namespace fly.Models
         [Display(Name = "Номер полиса")]
         public string PolicyNumber { get; set; }
 
-        [Display(Name = "Дата начала")]
+        [Display(Name = "Дата начала страхования")]
         public DateTime StartDate { get; set; }
 
-        [Display(Name = "Дата окончания")]
+        [Display(Name = "Дата окончания страхования")]
         public DateTime EndDate { get; set; }
 
         [Display(Name = "Сумма покрытия")]
