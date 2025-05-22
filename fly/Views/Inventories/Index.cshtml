@@ -3,71 +3,93 @@
 @{
     ViewData["Title"] = "Инвентаризация экспонатов";
     var isPdf = Context.Request.Query["isPdf"].ToString() == "true";
+    var startDate = Context.Request.Query["startDate"].ToString();
+    var endDate = Context.Request.Query["endDate"].ToString();
+    var writeOffStartDate = Context.Request.Query["writeOffStartDate"].ToString();
+    var writeOffEndDate = Context.Request.Query["writeOffEndDate"].ToString();
 }
 
 @if (!isPdf)
 {
-    <h1>История поступления экспонатов</h1>
-
-    <form id="filterForm" method="get" asp-action="Index" class="mb-3">
-        <div class="form-row align-items-end">
-            <div class="form-group col-md-6">
-                <label>Дата поступления:</label>
-                <div class="input-group">
-                    <input type="date" id="startDate" name="startDate" class="form-control" placeholder="с" />
-                    <span class="mx-2"> </span>
-                    <input type="date" id="endDate" name="endDate" class="form-control" placeholder="по" />
+    <div class="card shadow-sm border-0 my-4">
+        <div class="card-body">
+            <h2 class="card-title mb-4">История поступления экспонатов</h2>
+            <form id="filterForm" method="get" asp-action="Index">
+                <div class="form-row align-items-end">
+                    <div class="form-group col-md-6 mb-2">
+                        <label class="font-weight-bold">Дата поступления:</label>
+                        <div class="input-group">
+                            <input type="date" id="startDate" name="startDate" class="form-control" placeholder="с" value="@startDate" />
+                            <span class="mx-2"></span>
+                            <input type="date" id="endDate" name="endDate" class="form-control" placeholder="по" value="@endDate" />
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 mb-2">
+                        <label class="font-weight-bold">Дата списания:</label>
+                        <div class="input-group">
+                            <input type="date" id="writeOffStartDate" name="writeOffStartDate" class="form-control" placeholder="с" value="@writeOffStartDate" />
+                            <span class="mx-2"></span>
+                            <input type="date" id="writeOffEndDate" name="writeOffEndDate" class="form-control" placeholder="по" value="@writeOffEndDate" />
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label>Дата списания:</label>
-                <div class="input-group">
-                    <input type="date" id="writeOffStartDate" name="writeOffStartDate" class="form-control" placeholder="с" />
-                    <span class="mx-2"> </span>
-                    <input type="date" id="writeOffEndDate" name="writeOffEndDate" class="form-control" placeholder="по" />
+                <div class="form-row mt-3">
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary mr-2">Фильтровать</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистить фильтры</button>
+                        <a asp-action="DownloadPdf"
+                           asp-route-startDate="@startDate"
+                           asp-route-endDate="@endDate"
+                           asp-route-writeOffStartDate="@writeOffStartDate"
+                           asp-route-writeOffEndDate="@writeOffEndDate"
+                           asp-route-isPdf="true"
+                           class="btn btn-danger float-right">
+                            <span class="oi oi-data-transfer-download"></span> Скачать отчет в PDF
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
-
-        <!-- Пропуск строки перед кнопками -->
-        <div class="form-row mt-3">
-            <div class="form-group col-md-12">
-                <button type="submit" class="btn btn-primary mr-2">Фильтровать</button>
-                <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистить фильтры</button>
-            </div>
-        </div>
-    </form>
-
-    <p>
-        <a asp-action="DownloadPdf" asp-route-startDate="@Context.Request.Query["startDate"]" asp-route-endDate="@Context.Request.Query["endDate"]" asp-route-writeOffStartDate="@Context.Request.Query["writeOffStartDate"]" asp-route-writeOffEndDate="@Context.Request.Query["writeOffEndDate"]" asp-route-isPdf="true" class="btn btn-danger">Скачать отчет в PDF</a>
-    </p>
+    </div>
 }
 
-<h1>История поступления экспонатов</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Экспонат</th>
-            <th>Дата поступления</th>
-            <th>Дата списания</th>
-        </tr>
-    </thead>
-    <tbody>
-       @foreach (var item in Model)
-        {
-            <tr>
-                <td>@(item.ExhibitName ?? item.Exhibit?.ExhibitName ?? "-")</td>
-                <td>@Html.DisplayFor(modelItem => item.поступления)</td>
-                <td>@Html.DisplayFor(modelItem => item.списания)</td>
-                
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div class="footer">
-    <p>Сформировано @DateTime.Now.ToString("dd MMMM yyyy")</p>
+<div class="card shadow border-0">
+    <div class="card-body">
+        <h4 class="card-title mb-4 text-center">История поступления экспонатов</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover" style="background-color: #f8f9fa;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="text-center">Экспонат</th>
+                        <th class="text-center">Дата поступления</th>
+                        <th class="text-center">Дата списания</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">Нет данных для отображения</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@((item.ExhibitName ?? item.Exhibit?.ExhibitName) ?? "-")</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.поступления)</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.списания)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="footer mt-3 text-right text-muted" style="font-size: 0.9em;">
+            Сформировано @DateTime.Now.ToString("dd MMMM yyyy")
+        </div>
+    </div>
 </div>
 
 @if (!isPdf)

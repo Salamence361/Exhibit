@@ -29,7 +29,7 @@ namespace fly.Controllers
         }
 
         // GET: Movements
-        public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate, int? exhibitId)
+        public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate, int? exhibitId, string exhibitSearch)
         {
             var movementsQuery = _context.Movements
                 .Include(m => m.Exhibit)
@@ -49,16 +49,24 @@ namespace fly.Controllers
             {
                 movementsQuery = movementsQuery.Where(m => m.ExhibitId == exhibitId.Value);
             }
+            // Фильтрация по названию экспоната
+            if (!string.IsNullOrWhiteSpace(exhibitSearch))
+            {
+                movementsQuery = movementsQuery.Where(m => m.Exhibit.ExhibitName.Contains(exhibitSearch));
+            }
 
             var exhibits = await _context.Exhibit.ToListAsync();
             ViewBag.Exhibits = new SelectList(exhibits, "ExhibitId", "ExhibitName", exhibitId);
+
+            // Для сохранения поискового запроса в поле
+            ViewBag.ExhibitSearch = exhibitSearch;
 
             var movements = await movementsQuery.OrderByDescending(m => m.MovementDate).ToListAsync();
             return View(movements);
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadPdf(DateTime? startDate, DateTime? endDate, int? exhibitId)
+        public async Task<IActionResult> DownloadPdf(DateTime? startDate, DateTime? endDate, int? exhibitId, string exhibitSearch)
         {
             var movementsQuery = _context.Movements
                 .Include(m => m.Exhibit)
@@ -77,6 +85,11 @@ namespace fly.Controllers
             if (exhibitId.HasValue && exhibitId.Value > 0)
             {
                 movementsQuery = movementsQuery.Where(m => m.ExhibitId == exhibitId.Value);
+            }
+            // Фильтрация по названию экспоната
+            if (!string.IsNullOrWhiteSpace(exhibitSearch))
+            {
+                movementsQuery = movementsQuery.Where(m => m.Exhibit.ExhibitName.Contains(exhibitSearch));
             }
 
             var movements = await movementsQuery.OrderByDescending(m => m.MovementDate).ToListAsync();

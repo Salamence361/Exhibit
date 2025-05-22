@@ -1,80 +1,92 @@
 ﻿@model IEnumerable<fly.Models.Movement>
 @{
-    ViewData["Title"] = "Перемещения экспонатов";
+    ViewData["Title"] = "Журнал перемещений экспонатов";
     var isPdf = Context.Request.Query["isPdf"].ToString() == "true";
+    var exhibits = ViewBag.Exhibits as SelectList;
+    var selectedExhibitId = Context.Request.Query["exhibitId"].ToString();
+    var exhibitSearch = Context.Request.Query["exhibitSearch"].ToString();
 }
 
 @if (!isPdf)
 {
-    <h1>Журнал перемещений экспонатов</h1>
-
-    <form id="filterForm" method="get" asp-action="Index" class="mb-3">
-        <div class="form-row align-items-end">
-            <div class="form-group col-md-4">
-                <label>Экспонат:</label>
-                <select name="exhibitId" class="form-control">
-                    <option value="">Все</option>
-                    @foreach (var exhibit in ((SelectList)ViewBag.Exhibits).Items.Cast<fly.Models.Exhibit>())
-                    {
-                        var isSelected = Context.Request.Query["exhibitId"] == exhibit.ExhibitId.ToString();
-                        //<option value="@exhibit.ExhibitId" @(isSelected ? "selected" : "")>@exhibit.ExhibitName</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Дата перемещения (с):</label>
-                <input type="date" id="startDate" name="startDate" class="form-control" value="@Context.Request.Query["startDate"]" />
-            </div>
-            <div class="form-group col-md-4">
-                <label>Дата перемещения (по):</label>
-                <input type="date" id="endDate" name="endDate" class="form-control" value="@Context.Request.Query["endDate"]" />
-            </div>
+    <div class="card shadow-sm border-0 my-4">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Журнал перемещений экспонатов</h2>
+            <form id="filterForm" method="get" asp-action="Index">
+                <div class="form-row align-items-end">
+                    
+                    <div class="form-group col-md-4 mb-2">
+                        <label class="font-weight-bold">Поиск по названию:</label>
+                        <input type="text" name="exhibitSearch" class="form-control" placeholder="Введите часть названия экспоната..." value="@exhibitSearch" />
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label class="font-weight-bold">Дата (с):</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control" value="@Context.Request.Query["startDate"]" />
+                    </div>
+                    <div class="form-group col-md-2 mb-2">
+                        <label class="font-weight-bold">Дата (по):</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control" value="@Context.Request.Query["endDate"]" />
+                    </div>
+                </div>
+                <div class="form-row mt-3">
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary mr-2">Фильтровать</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистить фильтры</button>
+                        <a asp-action="DownloadPdf"
+                            asp-route-startDate="@Context.Request.Query["startDate"]"
+                            asp-route-endDate="@Context.Request.Query["endDate"]"
+                            asp-route-exhibitId="@selectedExhibitId"
+                            asp-route-exhibitSearch="@exhibitSearch"
+                            asp-route-isPdf="true"
+                            class="btn btn-danger float-right">
+                            <span class="oi oi-data-transfer-download"></span> Скачать отчет в PDF
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="form-row mt-3">
-            <div class="form-group col-md-12">
-                <button type="submit" class="btn btn-primary mr-2">Фильтровать</button>
-                <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистить фильтры</button>
-            </div>
-        </div>
-    </form>
-
-    <p>
-        <a asp-action="DownloadPdf"
-           asp-route-startDate="@Context.Request.Query["startDate"]"
-           asp-route-endDate="@Context.Request.Query["endDate"]"
-           asp-route-exhibitId="@Context.Request.Query["exhibitId"]"
-           asp-route-isPdf="true"
-           class="btn btn-danger">Скачать отчет в PDF</a>
-    </p>
+    </div>
 }
 
-<h1>Журнал перемещений экспонатов</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Экспонат</th>
-            <th>Из хранилища</th>
-            <th>В хранилище</th>
-            <th>Дата перемещения</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@(item.Exhibit?.ExhibitName ?? "-")</td>
-                <td>@(item.FromStorageLocation?.Name ?? "-")</td>
-                <td>@(item.ToStorageLocation?.Name ?? "-")</td>
-                <td>@item.MovementDate.ToString("dd.MM.yyyy HH:mm")</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div class="footer">
-    <p>Сформировано @DateTime.Now.ToString("dd MMMM yyyy")</p>
+<div class="card shadow border-0">
+    <div class="card-body">
+        <h4 class="card-title mb-4 text-center">Журнал перемещений экспонатов</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover" style="background-color: #f8f9fa;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="text-center">Экспонат</th>
+                        <th class="text-center">Из хранилища</th>
+                        <th class="text-center">В хранилище</th>
+                        <th class="text-center">Дата перемещения</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Нет данных для отображения</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@Html.DisplayFor(m => item.Exhibit.ExhibitName)</td>
+                                <td class="text-center">@Html.DisplayFor(m => item.FromStorageLocation.Name)</td>
+                                <td class="text-center">@Html.DisplayFor(m => item.ToStorageLocation.Name)</td>
+                                <td class="text-center">@item.MovementDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="footer mt-3 text-right text-muted" style="font-size: 0.9em;">
+            Сформировано @DateTime.Now.ToString("dd MMMM yyyy")
+        </div>
+    </div>
 </div>
 
 @if (!isPdf)
@@ -84,7 +96,10 @@
             function clearFilters() {
                 document.getElementById('startDate').value = '';
                 document.getElementById('endDate').value = '';
-                document.getElementsByName('exhibitId')[0].selectedIndex = 0;
+                var exhibitSelect = document.getElementsByName('exhibitId')[0];
+                if (exhibitSelect) exhibitSelect.selectedIndex = 0;
+                var searchInput = document.getElementsByName('exhibitSearch')[0];
+                if (searchInput) searchInput.value = '';
                 document.getElementById('filterForm').submit();
             }
         </script>
